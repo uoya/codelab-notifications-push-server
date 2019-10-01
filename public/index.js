@@ -49,7 +49,16 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./serviceworker.js')
     .then((registration) => { 
       console.log('Service worker registered. Scope: ' + registration.scope); 
-      console.log()
+      let controller = navigator.serviceWorker.controller;
+      if (controller) {
+        console.log(controller);
+      }
+      else {
+        console.log(
+          'Either there is no active service worker,' + 
+          'or you did a shift + refresh'
+        );
+      }
     })
     .catch((error) => { console.log(error); });
 }
