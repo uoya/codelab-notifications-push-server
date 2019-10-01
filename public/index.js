@@ -19,7 +19,7 @@ function requestPermission() {
   Notification.requestPermission()
     .then((permission) => {
       console.log('Promise resolved: ' + permission);
-      showPermission();
+      updateUI;
     })
     .catch((error) => {
       console.log('Promise was rejected');
@@ -42,14 +42,14 @@ async function getRegistration() {
 
 async function getSubscription() {
   let reg = await getRegistration();
-  console.log(await reg.pushManager.getSubscription());
-  return 'i am a subscription';
+  let sub = await reg.pushManager.getSubscription();
+  return sub;
 }
 
 async function subscribeToPush() {
   let reg = await getRegistration;
   if (reg) {
-    console.log(reg.pushManager);
+    reg.pushManager.subscribe({})
     return reg.pushManager;
   }
 }
