@@ -31,6 +31,13 @@ function sendNotification() {
         myBool: true
       }
     },
+    actions: [{
+      action: 'cart',
+      title: 'View Cart'
+    },{
+      action: 'buy',
+      title: 'Buy Stuff'
+    }],
     icon: 'https://cdn2.thecatapi.com/images/b50.gif'
   };
   console.log('Creating new notification');
