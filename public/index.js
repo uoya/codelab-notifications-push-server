@@ -44,3 +44,7 @@ function sendNotification() {
 window.onload = () => { 
   showPermission();  
 };
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./serviceworker.js');
+}

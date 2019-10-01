@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 app.get("/favicon.ico", function(request, response) {
   console.log('pls stop');
-  return;
+  response.send(200);
 });
 
 // http://expressjs.com/en/starter/basic-routing.html
