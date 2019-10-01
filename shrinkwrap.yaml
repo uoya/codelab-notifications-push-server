@@ -486,4 +486,4 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   express: ^4.16.4
-  web-push: ''
+  web-push: ^3.4.0
