@@ -1,6 +1,10 @@
 # Get started with the Notifications API
 
-Have you completed Step 2 of this codelab? If not, you might want to do that first! You can find it here: [notifications-step-2](https://glitch.com/edit/#!/notifications-step-2)
+Have you completed the previous steps in this codelab? If not, you might want to do that first! You can find them at: 
+
+* [notifications-step-0](https://glitch.com/edit/#!/notifications-step-0)
+* [notifications-step-1](https://glitch.com/edit/#!/notifications-step-1)
+* [notifications-step-2](https://glitch.com/edit/#!/notifications-step-2)
 
 ## Step 3 (Optional): Experiment!
 
