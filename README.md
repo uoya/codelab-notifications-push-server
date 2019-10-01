@@ -1,27 +1,44 @@
-Welcome to Glitch
-=================
+# Get started with the Notifications API
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+Have you completed Step 2 of this codelab? If not, you might want to do that first! You can find it here: [notifications-step-2](https://glitch.com/edit/#!/notifications-step-2)
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+## Step 3 (Optional): Experiment!
 
-Find out more [about Glitch](https://glitch.com/about).
+The `Notification` constructor takes two parameters: `title` and `options`. `options` is an object with properties representing visual settings and data you can include in a notification. See the [MDN documentation on notification parameters](https://developer.mozilla.org/en-US/docs/Web/API/notification/Notification#Parameters) for more information. 
 
+Example:
 
-Your Project
-------------
+```js
+let title = 'Title';
+let options = {
+  body: 'body',
+  actions: [{
+    action: 'shop',
+    title: 'Shop'
+  },{
+    action: 'cart',
+    title: 'View Cart'
+  }],
+  data: { 
+    cheese: 'I like cheese',
+    pizza: 'Excellent cheese delivery mechanism',
+    arbitrary: { 
+      faveNumber: 42,
+      myBool: true
+    }
+  }
+};
+let notification = new Notification(title, options);
+```
 
-On the front-end,
-- edit `public/client.js`, `public/style.css` and `views/index.html`
-- drag in `assets`, like images or music, to add them to your project
+In the `sendNotification` function in index.js, edit the `options` object to experiment with some notification options. Try [Peter Beverloo's Notification Generator](https://tests.peter.sh/notification-generator/) for some ideas!
 
-On the back-end,
-- your app starts at `server.js`
-- add frameworks and packages in `package.json`
-- safely store app secrets in `.env` (nobody can see this but you and people you invite)
+{ alert }
 
+Note that the following `options` fields only work with a Service Worker:
 
-Made by [Glitch](https://glitch.com/)
--------------------
+```
 
-\ ゜o゜)ノ
+```
+
+Take the next codelab in this series, [Handle notifications with a service worker](http://) to explore more.
