@@ -34,11 +34,14 @@ function sendNotification() {
     icon: 'https://cdn2.thecatapi.com/images/b50.gif'
   };
   console.log('Creating new notification');
-  let notification = new Notification(title, options);
-  notification.onerror = (event) => { 
-    console.log('Could not send notification');
-    console.log(event);
-  };
+  
+  navigator.serviceWorker.getRegistration()
+    .then((registration) => {
+      registration.showNotification(title, options)
+        .then((result) => { console.log(result); })
+        .catch((err) => { console.log(err); } );
+    })
+    .catch((err) => { console.log(err); } );
 }
 
 window.onload = () => { 
