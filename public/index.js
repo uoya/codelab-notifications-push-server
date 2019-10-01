@@ -18,6 +18,19 @@ function requestPermission() {
     });
 }
 
+function getRegistration() {
+  let reg = navigator.serviceWorker.getRegistration()
+    .then((registration) => { 
+      console.log(registration.scope);
+      return registration; 
+    })
+    .catch();
+}
+
+function subscribeToPush() {
+  navigator.
+}
+
 // Use the Notification constructor to create and send a new Notification. 
 function sendNotification() {
   let title = 'Test';
@@ -59,6 +72,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./serviceworker.js')
     .then((registration) => { 
       console.log('Service worker registered. Scope: ' + registration.scope); 
+      /* 
       let worker = navigator.serviceWorker.controller;
       if (worker) {
         worker.postMessage('hi');
@@ -68,6 +82,7 @@ if ('serviceWorker' in navigator) {
         'or you did a hard refresh. ' + 
         'Try doing a soft refresh.'
       );}
+      */
     })
     .catch((error) => { console.log(error); });
 }
