@@ -35,14 +35,16 @@ let options = {
 let notification = new Notification(title, options);
 ```
 
-In the `sendNotification` function in index.js, edit the `options` object to experiment with some notification options. Try [Peter Beverloo's Notification Generator](https://tests.peter.sh/notification-generator/) for some ideas!
+In the `sendNotification` function in public/index.js, edit the `options` object to experiment with some notification options. Try [Peter Beverloo's Notification Generator](https://tests.peter.sh/notification-generator/) for some ideas!
 
-{ alert }
+{% Aside %}
 
 Note that the following `options` fields only work with a Service Worker:
 
-```
+* dskjf
+* dklfsjlj
+* fsljaf
 
-```
+{% endAside %}
 
-Take the next codelab in this series, [Handle notifications with a service worker](http://) to explore more.
+Take the next codelab in this series, [Handle notifications with a service worker]() to manage push notifications:Add a service worker]()
