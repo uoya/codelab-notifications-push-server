@@ -4,25 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Get started with the Notifications API</title>
+    <title>Build a Push server</title>
     <script src="index.js"></script>
   </head>
   <body>
-    <h1>Get started with the Notifications API</h1>
     <div>
-      <button onclick = "subscribeToPush();">
-        Subscribe to Push
-      </button>
-      <p id="subscription"></p>
+      <p id="serviceworker">No service worker.</p>
+      <button id="register">Register service worker</button>
     </div>
     <div>
-      <button onclick = "requestPermission();">
-        Request permission to send notifications
-      </button>
-      <p id="permission"></p>
+      <p id="pushsubscription">No push subscription.</p>
+      <button id="subscribe">Subscribe to Push</button>
     </div>
-    <button onclick = "sendNotification();">Send a notification</button>
-
     
     <!-- include the Glitch button to show what the webpage is about and
           to make it easier for folks to view source and remix -->
