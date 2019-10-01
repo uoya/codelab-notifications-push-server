@@ -1,8 +1,17 @@
 // Print permission status to the console and update the onscreen message.
-function showPermission() {
-  console.log('Notification permission is ' + Notification.permission);
-  let p = document.getElementById('permission');
-  p.textContent = 'Notification permission is ' + Notification.permission;
+async function updateUI() {
+  let permissionState = Notification.permission;
+  let subscriptionState = await getSubscription();
+  
+  console.log('Notification permission is ' + permissionState);
+  console.log('Subscription is ' + subscriptionState);
+  
+  let p1 = document.getElementById('permission');
+  let p2 = document.getElementById('subscription');
+  
+  p1.textContent = 'Notification permission is ' + Notification.permission;
+  p2.textContent = 'Subscription is ' + subscriptionState;
+  
 }
 
 // Use the Notification API to request permission to send notifications.
@@ -18,17 +27,31 @@ function requestPermission() {
     });
 }
 
-function getRegistration() {
-  let reg = navigator.serviceWorker.getRegistration()
+async function getRegistration() {
+  let reg = await navigator.serviceWorker.getRegistration()
     .then((registration) => { 
       console.log(registration.scope);
       return registration; 
     })
-    .catch();
+    .catch((err => { 
+      console.log(err); 
+      return; 
+    }));
+  return reg;
 }
 
-function subscribeToPush() {
-  navigator.
+async function getSubscription() {
+  let reg = await getRegistration();
+  console.log(await reg.pushManager.getSubscription());
+  return 'i am a subscription';
+}
+
+async function subscribeToPush() {
+  let reg = await getRegistration;
+  if (reg) {
+    console.log(reg.pushManager);
+    return reg.pushManager;
+  }
 }
 
 // Use the Notification constructor to create and send a new Notification. 
@@ -65,7 +88,7 @@ function sendNotification() {
 }
 
 window.onload = () => { 
-  showPermission();  
+  updateUI();  
 };
 
 if ('serviceWorker' in navigator) {
