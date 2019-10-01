@@ -1,6 +1,7 @@
 console.log('Hello from serviceworker.js');
 
-this.onmessage = (data) => {
-  console.log('hi');
-  console.log(data);
+this.onmessage = (message) => {
+  console.log(message);
 }
+
+console.log(this);

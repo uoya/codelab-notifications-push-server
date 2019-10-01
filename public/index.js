@@ -46,5 +46,10 @@ window.onload = () => {
 };
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./serviceworker.js');
+  navigator.serviceWorker.register('./serviceworker.js')
+    .then((registration) => { 
+      console.log('Service worker registered. Scope: ' + registration.scope); 
+      console.log()
+    })
+    .catch((error) => { console.log(error); });
 }
