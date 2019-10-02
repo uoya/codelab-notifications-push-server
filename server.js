@@ -1,6 +1,9 @@
 const express = require('express');
 const webpush = require('web-push');
+const bodyparser = require('body-parser');
 const app = express();
+
+app.use(bodyparser.json());
 
 /*
 const vapidKeys = webpush.generateVAPIDKeys();
@@ -30,23 +33,19 @@ function sendNotification(subscription, notification) {
   }
 }
 
-function addSubscription(data) {
-  console.log(data);
-}
-function removeSubscription(data) {
-  console.log(data);
-}
-
 app.use(express.static('public'));
 
 app.post('/addsubscription', (request, response) => {
-  addSubscription(request.body);
+  let subscription = request.body;
+  console.log(subscriptions);
+  subscriptions[subscription.endpoint] = subscription;
   response.sendStatus(200);
 });
 
 app.post('/removesubscription', (request, response) => {
-  console.log(request.body);
-  removeSubscription(request.body);
+  let subscription = request.body;
+  delete subscriptions[subscription.endpoint];
+  console.log(subscriptions);
   response.sendStatus(200);
 });
 
@@ -56,7 +55,7 @@ app.get('/test', (request, response) => {
 });
 
 app.get('/favicon.ico', (request, response) => {
-  response.send(200);
+  response.sendStatus(200);
 });
 
 app.get('/', (request, response) => {

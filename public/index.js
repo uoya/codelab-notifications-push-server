@@ -94,7 +94,7 @@ function sendSubscriptionToServer(subscription) {
   xhr.onload = loadHandler;
   xhr.open('POST', '/addsubscription');
   xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(subscription);
+  xhr.send(JSON.stringify(subscription));
 }
 
 function removeSubscriptionFromServer(subscription) {
@@ -111,7 +111,7 @@ function removeSubscriptionFromServer(subscription) {
   xhr.onload = loadHandler;
   xhr.open('POST', '/removesubscription');
   xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.send(subscription);
+  xhr.send(JSON.stringify(subscription));
 }
 
 async function subscribeToPush() {
@@ -126,8 +126,6 @@ async function subscribeToPush() {
   }
   sendSubscriptionToServer(subscription);
   updateUI();
-  
-  return subscription;
 }
 
 async function unSubscribeFromPush() {
