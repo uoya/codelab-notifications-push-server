@@ -152,8 +152,11 @@ async function sendNotification() {
   };
   
   xhr.onload = loadHandler;
-  xhr.open('GET', '/test');
-  xhr.send();
+  xhr.open('POST', '/test');
+  xhr.send(JSON.stringify({ 
+    title: 'Test title', 
+    options: { body: 'Test body'}
+  }));
 }
 
 async function initializePage() {

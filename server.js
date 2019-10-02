@@ -29,7 +29,19 @@ function sendNotifications(subscriptions, notification) {
 
 function sendNotification(subscription, notification) {
   if (subscriptions[subscription.endpoint]) {
-    console.log('Send notification to ', subscription.endpoint);
+    let payload = JSON.stringify(notification);
+    let options = {
+      gcmAPIKey: process.env.FCM_KEY,
+      vapidDetails: {
+        subject: process.env.VAPID_SUBJECT,
+        publicKey: process.env.VAPID_PUBLIC_KEY,
+        privateKey: process.env.VAPID_PRIVATE_KEY
+      },
+      TTL: 9000
+    };
+    webpush.sendNotification(subscription, payload, options)
+      .then((result) => { console.log(result) })
+      .catch((error) => { console.log(error) });
   }
 }
 
@@ -39,6 +51,7 @@ app.post('/addsubscription', (request, response) => {
   let subscription = request.body;
   console.log(subscriptions);
   subscriptions[subscription.endpoint] = subscription;
+  console.log(subscriptions);
   response.sendStatus(200);
 });
 
@@ -49,8 +62,8 @@ app.post('/removesubscription', (request, response) => {
   response.sendStatus(200);
 });
 
-app.get('/test', (request, response) => {
-  console.log('Implement test endpoint');
+app.post('/test', (request, response) => {
+  sendNotifications(subscriptions, request.body);
   response.sendStatus(200);
 });
 
