@@ -1,4 +1,4 @@
-const VAPID_KEY = '';
+const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
 
 const isServiceWorkerCapable = 'serviceWorker' in navigator;
 const isPushCapable = 'PushManager' in window;
@@ -58,8 +58,11 @@ function getRegistration() {
 }
 
 async function getSubscription(registration) {
-  console.log('TODO: Implement getSubscription');
-  return false;
+  if (!(registration && registration.active)) {
+    return false;
+  } else { 
+    return registration.pushManager.getSubscription();
+  }
 }
 
 async function registerServiceWorker() {
@@ -74,11 +77,22 @@ async function unRegisterServiceWorker() {
 }
 
 async function subscribeToPush() {
-  console.log('TODO: Implement subscribeToPush');
+  let registration = await getRegistration();
+  let subscription = await getSubscription(registration);
+  if (!subscription) {
+    let options = {
+      userVisibleOnly: true,
+      applicationServerKey: VAPID_PUBLIC_KEY
+    };
+    subscription = await registration.pushManager.subscribe(options);
+  }
+  updateUI();
+  return subscription();
 }
 
 async function unSubscribeFromPush() {
   console.log('TODO: Implement unSubscribeFromPush');
+  updateUI();
 }
 
 async function initializePage() {
