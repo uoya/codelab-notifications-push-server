@@ -22,15 +22,16 @@ let notification = {};
 
 function sendNotifications(subscriptions, notification) {
   let myArray = Object.keys(subscriptions);
-  console.log(myArray);
+  //console.log(myArray);
   myArray.map((i) => {
     sendNotification(subscriptions[i], notification);
   })
 }
 
 function sendNotification(subscription, notification) {
+  let payload = JSON.stringify(notification);
+  console.log(payload);
   if (subscriptions[subscription.endpoint]) {
-    let payload = JSON.stringify(notification);
     let options = {
       gcmAPIKey: process.env.FCM_KEY,
       vapidDetails: {
@@ -42,11 +43,16 @@ function sendNotification(subscription, notification) {
     };
     webpush.sendNotification(subscription, payload, options)
       .then((result) => { 
-        console.log('Location: ', result.headers.location);
-        console.log('Content type: ', result.headers['content-type']);
-        console.log('Status: ', result.statusCode);
+        //console.log('Location: ', result.headers.location);
+        //console.log('Content type: ', result.headers['content-type']);
+        //console.log('Status: ', result.statusCode);
       })
-      .catch((error) => { console.log(error) });
+      .catch((error) => { 
+        console.log('Name: ', error.name); 
+        console.log('Message: ', error.message);
+        console.log('Body: ', error.body);
+        console.log('Endpoint: ', error.endpoint);
+      });
   }
 }
 
@@ -65,7 +71,7 @@ app.post('/removesubscription', (request, response) => {
 });
 
 app.post('/test', (request, response) => {
-  sendNotifications(subscriptions, JSON.parse(request.body));
+  sendNotifications(subscriptions, request.body);
   response.sendStatus(200);
 });
 
