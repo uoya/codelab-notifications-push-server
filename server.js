@@ -22,6 +22,7 @@ let notification = {};
 
 function sendNotifications(subscriptions, notification) {
   let myArray = Object.keys(subscriptions);
+  console.log(myArray);
   myArray.map((i) => {
     sendNotification(subscriptions[i], notification);
   })
@@ -40,7 +41,10 @@ function sendNotification(subscription, notification) {
       TTL: 9000
     };
     webpush.sendNotification(subscription, payload, options)
-      .then((result) => { console.log(result) })
+      .then((result) => { 
+        console.log('Location: ', result.headers.location);
+        console.log('Status: ', result.status);
+      })
       .catch((error) => { console.log(error) });
   }
 }
@@ -49,16 +53,13 @@ app.use(express.static('public'));
 
 app.post('/addsubscription', (request, response) => {
   let subscription = request.body;
-  console.log(subscriptions);
   subscriptions[subscription.endpoint] = subscription;
-  console.log(subscriptions);
   response.sendStatus(200);
 });
 
 app.post('/removesubscription', (request, response) => {
   let subscription = request.body;
   delete subscriptions[subscription.endpoint];
-  console.log(subscriptions);
   response.sendStatus(200);
 });
 

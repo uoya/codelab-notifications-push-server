@@ -120,7 +120,7 @@ async function subscribeToPush() {
   if (!subscription) {
     let options = {
       userVisibleOnly: true,
-      applicationServerKey: VAPID_PUBLIC_KEY
+      applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
     };
     subscription = await registration.pushManager.subscribe(options);
   }
