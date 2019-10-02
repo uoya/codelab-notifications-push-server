@@ -105,6 +105,13 @@ async function unSubscribeFromPush() {
   updateUI();
 }
 
+async function sendNotification() {
+  let xhr = new XMLHttpRequest();
+  xhr.onload = (data) => { console.log(data);};
+  xhr.open('GET', '/test');
+  xhr.send();
+}
+
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {
     let message = 

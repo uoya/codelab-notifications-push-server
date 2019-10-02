@@ -17,8 +17,12 @@ console.log(vapidKeys);
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
 
+app.get("/test", function(request, response) {
+  console.log('congrats you hit the test endpoint');
+  response.send(200);
+});
+
 app.get("/favicon.ico", function(request, response) {
-  console.log('pls stop');
   response.send(200);
 });
 
