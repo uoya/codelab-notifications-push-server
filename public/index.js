@@ -86,9 +86,6 @@ function sendSubscriptionToServer(subscription) {
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
     let url = event.srcElement.responseURL;
-    console.log('Response text: ', text);
-    console.log('HTTP status: ', status);
-    console.log('Response URL: ', url);
   };
   
   xhr.onload = loadHandler;
@@ -103,9 +100,6 @@ function removeSubscriptionFromServer(subscription) {
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
     let url = event.srcElement.responseURL;
-    console.log('Response text: ', text);
-    console.log('HTTP status: ', status);
-    console.log('Response URL: ', url);
   };
   
   xhr.onload = loadHandler;
@@ -146,9 +140,6 @@ async function sendNotification() {
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
     let url = event.srcElement.responseURL;
-    console.log('Response text: ', text);
-    console.log('HTTP status: ', status);
-    console.log('Response URL: ', url);
   };
   
   xhr.onload = loadHandler;

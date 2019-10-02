@@ -30,7 +30,6 @@ function sendNotifications(subscriptions, notification) {
 
 function sendNotification(subscription, notification) {
   let payload = JSON.stringify(notification);
-  console.log(payload);
   if (subscriptions[subscription.endpoint]) {
     let options = {
       gcmAPIKey: process.env.FCM_KEY,
@@ -48,10 +47,11 @@ function sendNotification(subscription, notification) {
         //console.log('Status: ', result.statusCode);
       })
       .catch((error) => { 
-        console.log('Name: ', error.name); 
-        console.log('Message: ', error.message);
-        console.log('Body: ', error.body);
-        console.log('Endpoint: ', error.endpoint);
+        //console.log('Name: ', error.name); 
+        //console.log('Message: ', error.message);
+        //console.log('Body: ', error.body);
+        //console.log('Endpoint: ', error.endpoint);
+        delete subscriptions[error.endpoint];
       });
   }
 }
