@@ -16,7 +16,10 @@ const urlB64ToUint8Array = (base64String) => {
   return outputArray;
 };
 
-function updateUI(registration, subscription) {
+async function updateUI() {
+  let registration = await getRegistration();
+  let subscription = await getSubscription(registration);
+  
   let reg = document.getElementById('registration');
   let sub = document.getElementById('subscription');
   let regButton = document.getElementById('register');
@@ -33,37 +36,44 @@ function updateUI(registration, subscription) {
   
   if (registration) {
     reg.textContent = registration.scope;
-    subButton.disabled = false;
+    unRegButton.disabled = false;
   } else {
     reg.textContent = 'No service worker registration.'
     regButton.disabled = false;
-    subButton.disabled = true;
   }
   
   if (subscription) {
     sub.textContent = subscription.endpoint;
-    subButton.disabled = true;
-    unSubButton.disabled = false;
   } else {
     sub.textContent = 'No push subscription.'
   }
-  
-  
 }
 
+function getRegistration() {
+  return navigator.serviceWorker.getRegistration();
+}
+
+async function getSubscription(registration) {
+  console.log('TODO: Implement getSubscription');
+  return false;
+}
 
 async function registerServiceWorker() {
-  console.log('TODO: Implement registerServiceWorker');
+  await navigator.serviceWorker.register('./serviceworker.js');
+  updateUI();
+}
+
+async function unRegisterServiceWorker() {
+  let reg console.log('TODO: Implement unRegisterServiceWorker');
 }
 
 async function subscribeToPush() {
   console.log('TODO: Implement subscribeToPush');
 }
 
-function getSubscription() {
-  console.log('TODO: Implement getSubscription');
+async function unSubscribeFromPush() {
+  console.log('TODO: Implement unSubscribeFromPush');
 }
-
 
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {
@@ -73,12 +83,7 @@ async function initializePage() {
     console.log(message);
     return;
   }
-  let subscription = false;  
-  let registration = await navigator.serviceWorker.getRegistration();
-  if (registration) {
-    subscription = await getSubscription(registration);
-  }
-  updateUI(registration, subscription);
+  updateUI();
 }
 
-initializePage();
+window.onload = initializePage;
