@@ -153,6 +153,7 @@ async function sendNotification() {
   
   xhr.onload = loadHandler;
   xhr.open('POST', '/test');
+  xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({ 
     title: 'Test title', 
     options: { body: 'Test body'}

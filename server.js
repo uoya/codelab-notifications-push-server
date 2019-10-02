@@ -43,7 +43,8 @@ function sendNotification(subscription, notification) {
     webpush.sendNotification(subscription, payload, options)
       .then((result) => { 
         console.log('Location: ', result.headers.location);
-        console.log('Status: ', result.status);
+        console.log('Content type: ', result.headers['content-type']);
+        console.log('Status: ', result.statusCode);
       })
       .catch((error) => { console.log(error) });
   }
@@ -64,7 +65,7 @@ app.post('/removesubscription', (request, response) => {
 });
 
 app.post('/test', (request, response) => {
-  sendNotifications(subscriptions, request.body);
+  sendNotifications(subscriptions, JSON.parse(request.body));
   response.sendStatus(200);
 });
 
