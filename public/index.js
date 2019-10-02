@@ -80,6 +80,40 @@ async function unRegisterServiceWorker() {
   updateUI();
 }
 
+function sendSubscriptionToServer(subscription) {
+  let xhr = new XMLHttpRequest();
+  let loadHandler = (event) => { 
+    let text = event.srcElement.responseText;
+    let status = event.srcElement.status;
+    let url = event.srcElement.responseURL;
+    console.log('Response text: ', text);
+    console.log('HTTP status: ', status);
+    console.log('Response URL: ', url);
+  };
+  
+  xhr.onload = loadHandler;
+  xhr.open('POST', '/addsubscription');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(subscription);
+}
+
+function removeSubscriptionFromServer(subscription) {
+  let xhr = new XMLHttpRequest();
+  let loadHandler = (event) => { 
+    let text = event.srcElement.responseText;
+    let status = event.srcElement.status;
+    let url = event.srcElement.responseURL;
+    console.log('Response text: ', text);
+    console.log('HTTP status: ', status);
+    console.log('Response URL: ', url);
+  };
+  
+  xhr.onload = loadHandler;
+  xhr.open('POST', '/removesubscription');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(subscription);
+}
+
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription(registration);
@@ -90,7 +124,9 @@ async function subscribeToPush() {
     };
     subscription = await registration.pushManager.subscribe(options);
   }
+  sendSubscriptionToServer(subscription);
   updateUI();
+  
   return subscription;
 }
 
@@ -100,6 +136,7 @@ async function unSubscribeFromPush() {
   if (!subscription) { 
     return; 
   } else {
+    removeSubscriptionFromServer(subscription);
     await subscription.unsubscribe();
   }
   updateUI();

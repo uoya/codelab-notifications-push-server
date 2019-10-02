@@ -1,5 +1,4 @@
 const express = require('express');
-const push = require('./push.js');
 const webpush = require('web-push');
 const app = express();
 
@@ -24,30 +23,36 @@ function sendNotifications(subscriptions, notification) {
     sendNotification(subscriptions[i], notification);
   })
 }
+
 function sendNotification(subscription, notification) {
   if (subscriptions[subscription.endpoint]) {
-    console.log('Send the notification');
-  } 
+    console.log('Send notification to ', subscription.endpoint);
+  }
 }
-function addSubscription(body) {
-  
+
+function addSubscription(data) {
+  console.log(data);
+}
+function removeSubscription(data) {
+  console.log(data);
 }
 
 app.use(express.static('public'));
 
-app.get('addsubscription', (request, response) => {
-  console.log('Implement addsubscription endpoint');
+app.post('/addsubscription', (request, response) => {
   addSubscription(request.body);
-  response.send(200);
+  response.sendStatus(200);
 });
 
-app.get('removesubscription', (request, response) => {
-  console.log('Implement removesubscription endpoint');
+app.post('/removesubscription', (request, response) => {
+  console.log(request.body);
+  removeSubscription(request.body);
+  response.sendStatus(200);
 });
 
 app.get('/test', (request, response) => {
   console.log('Implement test endpoint');
-  response.send(200);
+  response.sendStatus(200);
 });
 
 app.get('/favicon.ico', (request, response) => {
