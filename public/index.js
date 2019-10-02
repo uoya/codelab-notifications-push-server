@@ -107,7 +107,16 @@ async function unSubscribeFromPush() {
 
 async function sendNotification() {
   let xhr = new XMLHttpRequest();
-  xhr.onload = (data) => { console.log(data);};
+  let loadHandler = (event) => { 
+    let text = event.srcElement.responseText;
+    let status = event.srcElement.status;
+    let url = event.srcElement.responseURL;
+    console.log('Response text: ', text);
+    console.log('HTTP status: ', status);
+    console.log('Response URL: ', url);
+  };
+  
+  xhr.onload = loadHandler;
   xhr.open('GET', '/test');
   xhr.send();
 }
