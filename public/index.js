@@ -9,22 +9,28 @@ async function subscribeToPush() {
   console.log('TODO: Implement subscribeToPush');
 }
 
-function getRegistration() {
-  return navigator.serviceWorker.getRegistration();
+function getSubscription() {
+  console.log('TODO: Implement getSubscription');
 }
 
-function getSubscription(registration) {
-  if (registration) {
-    if (registration.active) {
-      return registration.push
-    }
-  }
+function updateUI() {
+  let p1 = 
 }
 
-getRegistration().then(registration => { 
-  if (registration) {
-    console.log(registration.scope);
-  } else {
-    console.log('No service worker registered.');
+async function initializePage() {
+  if (!isServiceWorkerCapable || !isPushCapable) {
+    let message = 
+      'User agent must be service worker ' + 
+      'and push capable to use this page.';
+    console.log(message);
+    return;
   }
-});
+  let subscription = false;  
+  let registration = await navigator.serviceWorker.getRegistration();
+  if (registration) {
+    subscription = await getSubscription(registration);
+  }
+  updateUI(registration, subscription);
+}
+
+initializePage();
