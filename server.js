@@ -1,25 +1,63 @@
 const express = require('express');
+const push = require('./push.js');
 const webpush = require('web-push');
-
 const app = express();
 
-app.use(express.static("public"));
+/*
+const vapidKeys = webpush.generateVAPIDKeys();
+console.log(vapidKeys);
+*/
 
-app.get("/test", function(request, response) {
-  console.log('congrats you hit the test endpoint');
+webpush.setGCMAPIKey(process.env.FCM_KEY);
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT,
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+);
+
+let subscriptions = {};
+let notification = {};
+
+function sendNotifications(subscriptions, notification) {
+  let myArray = Object.keys(subscriptions);
+  myArray.map((i) => {
+    sendNotification(subscriptions[i], notification);
+  })
+}
+function sendNotification(subscription, notification) {
+  if (subscriptions[subscription.endpoint]) {
+    console.log('Send the notification');
+  } 
+}
+function addSubscription(body) {
+  
+}
+
+app.use(express.static('public'));
+
+app.get('addsubscription', (request, response) => {
+  console.log('Implement addsubscription endpoint');
+  addSubscription(request.body);
   response.send(200);
 });
 
-app.get("/favicon.ico", function(request, response) {
+app.get('removesubscription', (request, response) => {
+  console.log('Implement removesubscription endpoint');
+});
+
+app.get('/test', (request, response) => {
+  console.log('Implement test endpoint');
   response.send(200);
 });
 
-// http://expressjs.com/en/starter/basic-routing.html
-app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/views/index.html");
+app.get('/favicon.ico', (request, response) => {
+  response.send(200);
 });
 
-// listen for requests :)
-const listener = app.listen(process.env.PORT, function() {
-  console.log("Your app is listening on port " + listener.address().port);
+app.get('/', (request, response) => {
+  response.sendFile(__dirname + '/views/index.html');
+});
+
+const listener = app.listen(process.env.PORT, () => {
+  console.log('Listening on port ' + listener.address().port);
 });
