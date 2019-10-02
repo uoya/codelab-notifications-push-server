@@ -1,1 +1,3 @@
-console.log('Hello from index.js');
+const isServiceWorkerCapable = 'serviceWorker' in navigator;
+const isPushCapable = 'PushManager' in window;
+
