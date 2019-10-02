@@ -35,7 +35,9 @@ async function updateUI() {
   unSubButton.disabled = true;
   
   if (registration) {
-    reg.textContent = registration.scope;
+    reg.textContent = 
+      'Service worker registered. Scope: ' + 
+      registration.scope;
     unRegButton.disabled = false;
   } else {
     reg.textContent = 'No service worker registration.'
@@ -43,7 +45,9 @@ async function updateUI() {
   }
   
   if (subscription) {
-    sub.textContent = subscription.endpoint;
+    sub.textContent = 
+      'Subscription endpoint: ' + 
+      subscription.endpoint;
     unSubButton.disabled = false;
   } else {
     sub.textContent = 'No push subscription.'
@@ -96,9 +100,8 @@ async function unSubscribeFromPush() {
   if (!subscription) { 
     return; 
   } else {
-    
+    await subscription.unsubscribe();
   }
-  console.log('TODO: Implement unSubscribeFromPush');
   updateUI();
 }
 
