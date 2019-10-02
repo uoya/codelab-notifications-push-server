@@ -87,10 +87,17 @@ async function subscribeToPush() {
     subscription = await registration.pushManager.subscribe(options);
   }
   updateUI();
-  return subscription();
+  return subscription;
 }
 
 async function unSubscribeFromPush() {
+  let registration = await getRegistration();
+  let subscription = await getSubscription(registration);
+  if (!subscription) { 
+    return; 
+  } else {
+    
+  }
   console.log('TODO: Implement unSubscribeFromPush');
   updateUI();
 }
