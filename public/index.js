@@ -1,5 +1,56 @@
+const VAPID_KEY = '';
+
 const isServiceWorkerCapable = 'serviceWorker' in navigator;
 const isPushCapable = 'PushManager' in window;
+
+const urlB64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+};
+
+function updateUI(registration, subscription) {
+  let reg = document.getElementById('registration');
+  let sub = document.getElementById('subscription');
+  let regButton = document.getElementById('register');
+  let subButton = document.getElementById('subscribe');
+  let unRegButton = document.getElementById('unregister');
+  let unSubButton = document.getElementById('unsubscribe');
+  
+  reg.textContent = '';
+  sub.textContent = '';
+  regButton.disabled = true;
+  subButton.disabled = true;
+  unRegButton.disabled = true;
+  unSubButton.disabled = true;
+  
+  if (registration) {
+    reg.textContent = registration.scope;
+    subButton.disabled = false;
+  } else {
+    reg.textContent = 'No service worker registration.'
+    regButton.disabled = false;
+    subButton.disabled = true;
+  }
+  
+  if (subscription) {
+    sub.textContent = subscription.endpoint;
+    subButton.disabled = true;
+    unSubButton.disabled = false;
+  } else {
+    sub.textContent = 'No push subscription.'
+  }
+  
+  
+}
+
 
 async function registerServiceWorker() {
   console.log('TODO: Implement registerServiceWorker');
@@ -13,9 +64,6 @@ function getSubscription() {
   console.log('TODO: Implement getSubscription');
 }
 
-function updateUI() {
-  let p1 = 
-}
 
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {

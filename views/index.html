@@ -9,19 +9,29 @@
   </head>
   <body>
     <div>
-      <p id="registration">No service worker.</p>
+      <p id="registration">No service worker registration.</p>
       <button 
         id="register"
         onclick="registerServiceWorker()">
         Register service worker
       </button>
+      <button 
+        id="unregister"
+        onclick="unRegisterServiceWorker()">
+        Unregister service worker
+      </button>
     </div>
     <div>
-      <p id="pushsubscription">No push subscription.</p>
+      <p id="subscription">No push subscription.</p>
       <button 
         id="subscribe"
         onclick="subscribeToPush()">
         Subscribe to push
+      </button>
+      <button 
+        id="unsubscribe"
+        onclick="unSubscribeFromPush()">
+        Unsubscribe from push
       </button>
     </div>
     
