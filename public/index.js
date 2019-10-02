@@ -44,8 +44,12 @@ async function updateUI() {
   
   if (subscription) {
     sub.textContent = subscription.endpoint;
+    unSubButton.disabled = false;
   } else {
     sub.textContent = 'No push subscription.'
+    if (registration) {
+      subButton.disabled = false;
+    }
   }
 }
 
@@ -64,7 +68,9 @@ async function registerServiceWorker() {
 }
 
 async function unRegisterServiceWorker() {
-  let reg console.log('TODO: Implement unRegisterServiceWorker');
+  let registration = await getRegistration();
+  await registration.unregister();
+  updateUI();
 }
 
 async function subscribeToPush() {
