@@ -42,13 +42,15 @@ function sendNotification(subscription, notification) {
     };
     webpush.sendNotification(subscription, payload, options)
       .then((result) => { 
+        let end = subscription.endpoint.length;
+        let id = subscription.endpoint.substr((end - 8), end);
         //console.log('Location: ', result.headers.location);
         //console.log('Content type: ', result.headers['content-type']);
-        //console.log('Status: ', result.statusCode);
+        console.log(id, result.statusCode);
       })
       .catch((error) => { 
         //console.log('Name: ', error.name); 
-        //console.log('Message: ', error.message);
+        console.log('Message: ', error.message);
         //console.log('Body: ', error.body);
         //console.log('Endpoint: ', error.endpoint);
         delete subscriptions[error.endpoint];
@@ -70,7 +72,6 @@ app.post('/removesubscription', (request, response) => {
   response.sendStatus(200);
 });
 
-
 app.post('/notify-all', (request, response) => {
   sendNotifications(subscriptions, request.body);
   response.sendStatus(200);
@@ -78,8 +79,8 @@ app.post('/notify-all', (request, response) => {
 
 app.post('/notify-me', (request, response) => {
   let subscription = request.body.subscription;
-  
-  sendNotification(subscription, request.body);
+  let notification = request.body.notification;
+  sendNotification(subscription, notification);
   response.sendStatus(200);
 });
 

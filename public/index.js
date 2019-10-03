@@ -153,8 +153,10 @@ async function sendNotification() {
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({ 
     subscription: subscription,
-    title: 'Test title', 
-    options: { body: 'Test body'}
+    notification: {
+      title: 'Test title', 
+      options: { body: 'Test body'}
+    }
   }));
 }
 
