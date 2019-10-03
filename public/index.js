@@ -145,29 +145,48 @@ async function unRegisterServiceWorker() {
   updateUI();
 }
 
-// Subscribe to push if a push subscription does not 
-// already exist. 
+// Subscribe the user to push notifications. 
+// 
+// If permission state is: 
+//   * 'default', a popup asks the user to allow or block.
+//   * 'allow', notifications will be sent without a popup.
+//   * 'denied', both notifications and popup are blocked.
+// 
+// Wait for the subscription promise to resolve before
+// sending the new subscription info to the server.
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
-  if (!subscription) {
+  if (registration && !subscription) {
     let options = {
       userVisibleOnly: true,
       applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
     };
     subscription = await registration.pushManager.subscribe(options);
+    postToServer('/addsubscription', subscription);
   }
-  postToServer('/addsubscription', subscription);
   updateUI();
 }
+
+// Unsubscribe from push notifications.
+
+a service worker registration and subscribe
+// to push notifications if a push subscription does not 
+// already exist. 
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
+  // Don't try to unsubscribe from a non-existent subscription
+  // because this would throw an error. 
   if (!subscription) { 
     return; 
-  } else {
-    postToServer('/removesubscription', subscription);
-    await subscription.unsubscribe();
-  }
+  } 
+  // Tell the server about the soon-to-be invalid subscription,
+  // then unsubscribe.
+  postToServer('/removesubscription', subscription);
+  // Wait for the unsubscription promise to resolve 
+  // before updating the UI, otherwise the change
+  // might occur after the UI update.
+  await subscription.unsubscribe();
   updateUI();
 }
 
