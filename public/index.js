@@ -1,4 +1,4 @@
-// Key used to identify the app s.
+// Key used to identify the app server and client to each other.
 const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
 
 // Convert a base64 string to Uint8Array.
@@ -22,6 +22,7 @@ const isServiceWorkerCapable = 'serviceWorker' in navigator;
 const isPushCapable = 'PushManager' in window;
 
 // Convenience function for creating XMLHttpRequests. 
+// Used to send stuff to the server.
 function createXhr(method, contentType, url) {
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
@@ -44,19 +45,23 @@ async function postToServer(url, data) {
   // Since the app only needs to send POSTs with JSON,
   // the method and content types are hard-coded for now.
   let xhr = createXhr('POST', 'application/json', url);
+  // Stringify the data. The server parses it back into an object.
   xhr.send(JSON.stringify(data));
 }
 
-// Create a notification with random data.
-// Send to a server URL. Can be either 'notify-me' 
-// or 'notify-all', depending which button was clicked.
+// Create a notification. Send it to a server URL
+// to trigger push notification/s.
 async function sendNotification(who) {
   let subscription = await getSubscription();
+  // Include a random number to help tell the
+  // difference between test notifications.
   let randy = Math.floor(Math.random() * 100);
   let notification = {
     title: 'Test ' + randy, 
     options: { body: 'Test body ' + randy }
   };
+  // Post to either '/notify-all' or 'notify-me',
+  // depending on which button was clicked.
   postToServer('/notify-' + who, {
     subscription: subscription,
     notification: notification
@@ -71,9 +76,11 @@ async function sendNotification(who) {
 // needs to figure out what to do with notifications 
 // to nowhere, or malformed/non-existent/expired subscriptions.
 async function updateUI() {
+  // Get the current registration and subscription states.
   let registration = await getRegistration();
   let subscription = await getSubscription();
   
+  // Get a bunch of references to elements on the page.
   let reg = document.getElementById('registration');
   let sub = document.getElementById('subscription');
   let regButton = document.getElementById('register');
@@ -81,6 +88,7 @@ async function updateUI() {
   let unRegButton = document.getElementById('unregister');
   let unSubButton = document.getElementById('unsubscribe');
   
+  // Reset all UI elements.
   reg.textContent = '';
   sub.textContent = '';
   regButton.disabled = true;
@@ -88,6 +96,9 @@ async function updateUI() {
   unRegButton.disabled = true;
   unSubButton.disabled = true;
   
+  // Work out what the state of all UI elements
+  // should be, based on registration and 
+  // subscription states.
   if (registration) {
     reg.textContent = 
       'Service worker registered. Scope: ' + registration.scope;
@@ -102,6 +113,7 @@ async function updateUI() {
     unSubButton.disabled = false;
   } else {
     sub.textContent = 'No push subscription.'
+    // Can only subscribe if registration exists.
     if (registration) {
       subButton.disabled = false;
     }

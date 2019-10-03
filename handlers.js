@@ -11,6 +11,8 @@ function addSubscription(request, response) {
 
 function removeSubscription(request, response) {
   let subscription = request.body;
+  let subscriptions = request.session.subscriptions;
+
   request.session.subscriptions = 
     Object.assign({}, request.session.subscriptions, {
       [subscription.endpoint]: false
