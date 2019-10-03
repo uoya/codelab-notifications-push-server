@@ -64,11 +64,11 @@ async function sendNotification(who) {
 
 // Refresh the onscreen messages and make sure only 
 // the buttons that make sense are active. 
+// 
 // Note that the "Send notification" buttons are always
-// active, whether or not a subscription exists--the server
-// needs to figure out what to do with notifications to nowhere or malformed/non-existent 
-// subscriptions. Notifications to expired subscriptions
-// will just fail.
+// active, whether or not a subscription exists. The server
+// needs to figure out what to do with notifications 
+// to nowhere, or malformed/non-existent/expired subscriptions.
 async function updateUI() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
@@ -107,28 +107,46 @@ async function updateUI() {
   }
 }
 
+// Get the current service worker registration.
+// Returns a Promise that resolves to a 
+// ServiceWorkerRegistration object, or undefined.
 async function getRegistration() {
   return navigator.serviceWorker.getRegistration();
 }
+
+// Get the current subscription. Returns a Promise
+// that resolves to a PushSubscription object 
+// if one exists, or null.
 async function getSubscription() {
   let registration = await getRegistration();
   if (!(registration && registration.active)) {
-    return false;
+    return null;
   } else { 
     return registration.pushManager.getSubscription();
   }
 }
 
+// Register a service worker, then update the UI.
 async function registerServiceWorker() {
+  // Await the outcome of the registration attempt
+  // so that the UI update is not superceded by a 
+  // returning Promise.
   await navigator.serviceWorker.register('./serviceworker.js');
   updateUI();
 }
+
+// Unregister a service worker, then update the UI.
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
+  // Await the outcome of the unregistration attempt
+  // so that the UI update is not superceded by a 
+  // returning Promise.
   await registration.unregister();
   updateUI();
 }
 
+// Subscribe to push if a push subscription does not 
+// already exist. 
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
