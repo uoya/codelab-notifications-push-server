@@ -135,6 +135,12 @@ async function unSubscribeFromPush() {
 }
 
 async function sendNotification() {
+  let registration = await getRegistration();
+  let subscription = await getSubscription(registration);
+  if (!subscription) {
+    console.log('No push subscription.');
+    return;
+  }
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
     let text = event.srcElement.responseText;
@@ -143,7 +149,25 @@ async function sendNotification() {
   };
   
   xhr.onload = loadHandler;
-  xhr.open('POST', '/test');
+  xhr.open('POST', '/notify-me');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.send(JSON.stringify({ 
+    subscription: subscription,
+    title: 'Test title', 
+    options: { body: 'Test body'}
+  }));
+}
+
+async function sendNotificationToAll() {
+  let xhr = new XMLHttpRequest();
+  let loadHandler = (event) => { 
+    let text = event.srcElement.responseText;
+    let status = event.srcElement.status;
+    let url = event.srcElement.responseURL;
+  };
+  
+  xhr.onload = loadHandler;
+  xhr.open('POST', '/notify-all');
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(JSON.stringify({ 
     title: 'Test title', 
