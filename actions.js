@@ -1,6 +1,11 @@
 const webpush = require('web-push');
 let subscriptions = require('./subscriptions.json');
 
+/*
+const vapidKeys = webpush.generateVAPIDKeys();
+console.log(vapidKeys);
+*/
+
 webpush.setGCMAPIKey(process.env.FCM_KEY);
 webpush.setVapidDetails(
   process.env.VAPID_SUBJECT,
@@ -46,3 +51,5 @@ let actions = {
   sendNotifications: sendNotifications,
   sendNotification: sendNotification
 }
+
+module.exports = actions;
