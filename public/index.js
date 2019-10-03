@@ -29,14 +29,9 @@ function buildXhr(method, contentType, url) {
   xhr.setRequestHeader('Content-Type', contentType);
 }
 
-function sendSubscriptionToServer(subscription) {
-  let xhr = buildXhr('POST', 'application/json', '/addsubscription');
-  xhr.send(JSON.stringify(subscription));
-}
-
-function removeSubscriptionFromServer(subscription) {
-  let xhr = buildXhr('POST', 'application/json', '/removesubscription');
-  xhr.send(JSON.stringify(subscription));
+async function postToServer(url, data) {
+  let xhr = buildXhr('POST', 'application/json', url);
+  xhr.send(JSON.stringify(data));
 }
 
 async function sendNotification() {
@@ -45,22 +40,21 @@ async function sendNotification() {
     console.log('No push subscription.');
     return;
   }
-  let xhr = buildXhr('POST', 'application/json', '/notify-me');
-  xhr.send(JSON.stringify({ 
+  let notification = {
+    title: 'Test title', 
+    options: { body: 'Test body'}
+  };
+  postToServer('/notify-me', { 
     subscription: subscription,
-    notification: {
-      title: 'Test title', 
-      options: { body: 'Test body'}
-    }
-  }));
+    notification: notification
+  });
 }
 
 async function sendNotificationToAll() {
-  let xhr = buildXhr('POST', 'application/json', '/notify-all');
-  xhr.send(JSON.stringify({ 
+  postToServer('/notify-all', { 
     title: 'Test title', 
     options: { body: 'Test body'}
-  }));
+  });
 }
 
 async function updateUI() {
@@ -135,7 +129,7 @@ async function subscribeToPush() {
     };
     subscription = await registration.pushManager.subscribe(options);
   }
-  sendSubscriptionToServer(subscription);
+  postToServer('/addsubscription', subscription);
   updateUI();
 }
 
@@ -144,7 +138,7 @@ async function unSubscribeFromPush() {
   if (!subscription) { 
     return; 
   } else {
-    removeSubscriptionFromServer(subscription);
+    postToServer('/removesubscription', subscription);
     await subscription.unsubscribe();
   }
   updateUI();
