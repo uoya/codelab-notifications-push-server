@@ -38,11 +38,17 @@ function createXhr(method, contentType, url) {
   return xhr;
 }
 
-// Create an XMLHttpRequest to hit a server URL. 
+// Send an XMLHttpRequest to a server URL.
 async function postToServer(url, data) {
+  // Since the app only needs to send POSTs with JSON,
+  // the method and content types are hard-coded for now.
   let xhr = createXhr('POST', 'application/json', url);
   xhr.send(JSON.stringify(data));
 }
+
+// Create a notification with random data.
+// Send to a server URL. Can be either 'notify-me' 
+// or 'notify-all', depending which button was clicked.
 async function sendNotification(who) {
   let subscription = await getSubscription();
   let randy = Math.floor(Math.random() * 100);
@@ -56,6 +62,13 @@ async function sendNotification(who) {
   });
 }
 
+// Refresh the onscreen messages and make sure only 
+// the buttons that make sense are active. 
+// Note that the "Send notification" buttons are always
+// active, whether or not a subscription exists--the server
+// needs to figure out what to do with notifications to nowhere or malformed/non-existent 
+// subscriptions. Notifications to expired subscriptions
+// will just fail.
 async function updateUI() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
