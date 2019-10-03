@@ -28,34 +28,31 @@ function sendNotifications(subscriptions, notification) {
   })
 }
 
-function sendNotification(subscription, notification) {
-  let payload = JSON.stringify(notification);
-  if (subscriptions[subscription.endpoint]) {
-    let options = {
-      gcmAPIKey: process.env.FCM_KEY,
-      vapidDetails: {
-        subject: process.env.VAPID_SUBJECT,
-        publicKey: process.env.VAPID_PUBLIC_KEY,
-        privateKey: process.env.VAPID_PRIVATE_KEY
-      },
-      TTL: 9000
-    };
-    webpush.sendNotification(subscription, payload, options)
-      .then((result) => { 
-        let end = subscription.endpoint.length;
-        let id = subscription.endpoint.substr((end - 8), end);
-        //console.log('Location: ', result.headers.location);
-        //console.log('Content type: ', result.headers['content-type']);
-        console.log(id, result.statusCode);
-      })
-      .catch((error) => { 
-        //console.log('Name: ', error.name); 
-        console.log('Message: ', error.message);
-        //console.log('Body: ', error.body);
-        //console.log('Endpoint: ', error.endpoint);
-        delete subscriptions[error.endpoint];
-      });
+function sendNotification(subscription, notification) {  
+  if (!(subscriptions[subscription.endpoint])) {
+    return;
   }
+  let payload = JSON.stringify(notification);
+  let end = subscription.endpoint.length;
+  let id = subscription.endpoint.substr((end - 8), end);
+  let options = {
+    gcmAPIKey: process.env.FCM_KEY,
+    vapidDetails: {
+      subject: process.env.VAPID_SUBJECT,
+      publicKey: process.env.VAPID_PUBLIC_KEY,
+      privateKey: process.env.VAPID_PRIVATE_KEY
+    },
+    TTL: 9000
+  };
+    
+  webpush.sendNotification(subscription, payload, options)
+    .then((result) => { 
+      console.log(id, result.statusCode);
+    })
+    .catch((error) => { 
+      console.log(id, error.body);
+      delete subscriptions[error.endpoint];
+    });
 }
 
 app.use(express.static('public'));

@@ -160,17 +160,27 @@ async function sendNotification() {
   }));
 }
 
-async function sendNotificationToAll() {
+function buildXhr(method, contentType) {
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
-    let url = event.srcElement.responseURL;
+    let location = event.srcElement.location;
+    console.log(location, text, ': ', status);
   };
   
   xhr.onload = loadHandler;
   xhr.open('POST', '/notify-all');
   xhr.setRequestHeader('Content-Type', 'application/json');
+}
+
+async function sendNotificationToAll() {
+  let xhr = buildXhr('POST', 'application/json', JSON.stringify({ 
+    title: 'Test title', 
+    options: { body: 'Test body'}
+  }));
+  
+  
   xhr.send(JSON.stringify({ 
     title: 'Test title', 
     options: { body: 'Test body'}
