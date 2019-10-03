@@ -163,8 +163,8 @@ async function unRegisterServiceWorker() {
 // If permission state is: 
 // 
 //   * 'default', a popup asks the user to allow or block.
-//   * 'allow', notifications will be sent without a popup.
-//   * 'denied', both notifications and popup are blocked.
+//   * 'granted', notifications will be sent without a popup.
+//   * 'denied', notifications and popup are both blocked.
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
@@ -178,7 +178,7 @@ async function subscribeToPush() {
     // Convert to format the server can understand.
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   };
-  // Wait for the outcome of the subscription event before 
+  // Wait for the outcome of the subscription attempt before 
   // telling the server about the new subscription and updating the UI.
   subscription = await registration.pushManager.subscribe(options);
   postToServer('/addsubscription', subscription);

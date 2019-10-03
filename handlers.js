@@ -1,22 +1,22 @@
 const push = require('./push.js');
 
 function addSubscription(request, response) {
-  let subscription = request.body;
-  request.session.subscriptions = 
-    Object.assign({}, request.session.subscriptions, {
-      [subscription.endpoint]: subscription
-    });
+  let endpoint = request.body.endpoint;
+  let subscriptions = request.session.subscriptions;
+  subscriptions = Object.assign({}, subscriptions, {
+    [endpoint]: request.body
+  });
+  request.session.subscriptions = subscriptions;
   response.sendStatus(200);
 }
 
 function removeSubscription(request, response) {
-  let subscription = request.body;
+  let endpoint = request.body.endpoint;
   let subscriptions = request.session.subscriptions;
-
-  request.session.subscriptions = 
-    Object.assign({}, request.session.subscriptions, {
-      [subscription.endpoint]: false
-    });
+  subscriptions = Object.assign({}, subscriptions, {
+    [endpoint]: false
+  });
+  request.session.subscriptions = subscriptions;
   response.sendStatus(200);
 }
 
