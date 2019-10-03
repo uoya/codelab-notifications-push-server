@@ -23,7 +23,11 @@ function buildXhr(method, contentType, url) {
     let status = event.srcElement.status;
     console.log(url, status, text);
   };
+  let errorHandler = (error) => {
+    console.log(error);
+  }
   xhr.onload = loadHandler;
+  xhr.onerror = errorHandler;
   xhr.open(method, url);
   xhr.setRequestHeader('Content-Type', contentType);
   return xhr;
@@ -36,13 +40,10 @@ async function postToServer(url, data) {
 
 async function sendNotification(who) {
   let subscription = await getSubscription();
-  if (!subscription) {
-    console.log('No push subscription.');
-    return;
-  }
+  let randy = Math.floor(Math.random() * 100);
   let notification = {
-    title: 'Test title', 
-    options: { body: 'Test body'}
+    title: 'Test ' + randy, 
+    options: { body: 'Test body ' + randy }
   };
   postToServer('/notify-' + who, {
     subscription: subscription,

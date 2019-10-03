@@ -29,7 +29,9 @@ function notifyMe(request, response) {
   let subscriptions = request.session.subscriptions;
   let subscription = request.body.subscription;
   let notification = request.body.notification;
-  push.sendNotification(subscriptions, subscription, notification);
+  if (subscription) {
+    push.sendNotification(subscriptions, subscription, notification);
+  }
   response.sendStatus(200);
 }
 
