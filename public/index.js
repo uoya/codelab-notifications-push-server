@@ -1,8 +1,7 @@
 const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
 
-const isServiceWorkerCapable = 'serviceWorker' in navigator;
-const isPushCapable = 'PushManager' in window;
-
+// Convert a base64 string to Uint8Array.
+// Must do this so the server can understand the VAPID_PUBLIC_KEY.
 const urlB64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
@@ -13,10 +12,16 @@ const urlB64ToUint8Array = (base64String) => {
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
-  return outputArray;
+  return outputArray; 
 };
 
-function buildXhr(method, contentType, url) {
+// Create a couple of booleans to use in 
+// feature-detection for service worker and push.
+const isServiceWorkerCapable = 'serviceWorker' in navigator;
+const isPushCapable = 'PushManager' in window;
+
+// Convenience function for creating XMLHttpRequests. 
+function createXhr(method, contentType, url) {
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
     let text = event.srcElement.responseText;
@@ -33,11 +38,11 @@ function buildXhr(method, contentType, url) {
   return xhr;
 }
 
+// Create an XMLHttpRequest to hit a server URL. 
 async function postToServer(url, data) {
-  let xhr = buildXhr('POST', 'application/json', url);
+  let xhr = createXhr('POST', 'application/json', url);
   xhr.send(JSON.stringify(data));
 }
-
 async function sendNotification(who) {
   let subscription = await getSubscription();
   let randy = Math.floor(Math.random() * 100);
@@ -92,7 +97,6 @@ async function updateUI() {
 async function getRegistration() {
   return navigator.serviceWorker.getRegistration();
 }
-
 async function getSubscription() {
   let registration = await getRegistration();
   if (!(registration && registration.active)) {
@@ -106,7 +110,6 @@ async function registerServiceWorker() {
   await navigator.serviceWorker.register('./serviceworker.js');
   updateUI();
 }
-
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
   await registration.unregister();
@@ -126,7 +129,6 @@ async function subscribeToPush() {
   postToServer('/addsubscription', subscription);
   updateUI();
 }
-
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
   if (!subscription) { 
