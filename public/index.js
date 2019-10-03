@@ -18,7 +18,7 @@ const urlB64ToUint8Array = (base64String) => {
 
 async function updateUI() {
   let registration = await getRegistration();
-  let subscription = await getSubscription(registration);
+  let subscription = await getSubscription();
   
   let reg = document.getElementById('registration');
   let sub = document.getElementById('subscription');
@@ -61,7 +61,8 @@ function getRegistration() {
   return navigator.serviceWorker.getRegistration();
 }
 
-async function getSubscription(registration) {
+async function getSubscription() {
+  let registration = await getRegistration();
   if (!(registration && registration.active)) {
     return false;
   } else { 
@@ -80,37 +81,32 @@ async function unRegisterServiceWorker() {
   updateUI();
 }
 
-function sendSubscriptionToServer(subscription) {
+function buildXhr(method, contentType, url) {
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
-    let url = event.srcElement.responseURL;
+    let location = event.srcElement.location;
+    console.log(location, status, ': ', text);
   };
-  
   xhr.onload = loadHandler;
-  xhr.open('POST', '/addsubscription');
-  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.open(method, url);
+  xhr.setRequestHeader('Content-Type', contentType);
+}
+
+function sendSubscriptionToServer(subscription) {
+  let xhr = buildXhr('POST', 'application/json', '/addsubscription');
   xhr.send(JSON.stringify(subscription));
 }
 
 function removeSubscriptionFromServer(subscription) {
-  let xhr = new XMLHttpRequest();
-  let loadHandler = (event) => { 
-    let text = event.srcElement.responseText;
-    let status = event.srcElement.status;
-    let url = event.srcElement.responseURL;
-  };
-  
-  xhr.onload = loadHandler;
-  xhr.open('POST', '/removesubscription');
-  xhr.setRequestHeader('Content-Type', 'application/json');
+  let xhr = buildXhr('POST', 'application/json', '/removesubscription');
   xhr.send(JSON.stringify(subscription));
 }
 
 async function subscribeToPush() {
   let registration = await getRegistration();
-  let subscription = await getSubscription(registration);
+  let subscription = await getSubscription();
   if (!subscription) {
     let options = {
       userVisibleOnly: true,
@@ -123,8 +119,7 @@ async function subscribeToPush() {
 }
 
 async function unSubscribeFromPush() {
-  let registration = await getRegistration();
-  let subscription = await getSubscription(registration);
+  let subscription = await getSubscription();
   if (!subscription) { 
     return; 
   } else {
@@ -135,22 +130,12 @@ async function unSubscribeFromPush() {
 }
 
 async function sendNotification() {
-  let registration = await getRegistration();
-  let subscription = await getSubscription(registration);
+  let subscription = await getSubscription();
   if (!subscription) {
     console.log('No push subscription.');
     return;
   }
-  let xhr = new XMLHttpRequest();
-  let loadHandler = (event) => { 
-    let text = event.srcElement.responseText;
-    let status = event.srcElement.status;
-    let url = event.srcElement.responseURL;
-  };
-  
-  xhr.onload = loadHandler;
-  xhr.open('POST', '/notify-me');
-  xhr.setRequestHeader('Content-Type', 'application/json');
+  let xhr = buildXhr('POST', 'application/json', '/notify-me');
   xhr.send(JSON.stringify({ 
     subscription: subscription,
     notification: {
@@ -160,27 +145,8 @@ async function sendNotification() {
   }));
 }
 
-function buildXhr(method, contentType) {
-  let xhr = new XMLHttpRequest();
-  let loadHandler = (event) => { 
-    let text = event.srcElement.responseText;
-    let status = event.srcElement.status;
-    let location = event.srcElement.location;
-    console.log(location, text, ': ', status);
-  };
-  
-  xhr.onload = loadHandler;
-  xhr.open('POST', '/notify-all');
-  xhr.setRequestHeader('Content-Type', 'application/json');
-}
-
 async function sendNotificationToAll() {
-  let xhr = buildXhr('POST', 'application/json', JSON.stringify({ 
-    title: 'Test title', 
-    options: { body: 'Test body'}
-  }));
-  
-  
+  let xhr = buildXhr('POST', 'application/json', '/notify-all');
   xhr.send(JSON.stringify({ 
     title: 'Test title', 
     options: { body: 'Test body'}
@@ -190,8 +156,8 @@ async function sendNotificationToAll() {
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {
     let message = 
-      'User agent must be service worker ' + 
-      'and push capable to use this page.';
+      'User agent must be service worker- ' + 
+      'and push-capable to use this page.';
     console.log(message);
     return;
   }
