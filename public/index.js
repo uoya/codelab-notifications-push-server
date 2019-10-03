@@ -21,12 +21,12 @@ function buildXhr(method, contentType, url) {
   let loadHandler = (event) => { 
     let text = event.srcElement.responseText;
     let status = event.srcElement.status;
-    let location = event.srcElement.location;
-    console.log(location, status, ': ', text);
+    console.log(url, status, text);
   };
   xhr.onload = loadHandler;
   xhr.open(method, url);
   xhr.setRequestHeader('Content-Type', contentType);
+  return xhr;
 }
 
 async function postToServer(url, data) {
@@ -34,7 +34,7 @@ async function postToServer(url, data) {
   xhr.send(JSON.stringify(data));
 }
 
-async function sendNotification() {
+async function sendNotification(who) {
   let subscription = await getSubscription();
   if (!subscription) {
     console.log('No push subscription.');
@@ -44,16 +44,9 @@ async function sendNotification() {
     title: 'Test title', 
     options: { body: 'Test body'}
   };
-  postToServer('/notify-me', { 
+  postToServer('/notify-' + who, {
     subscription: subscription,
     notification: notification
-  });
-}
-
-async function sendNotificationToAll() {
-  postToServer('/notify-all', { 
-    title: 'Test title', 
-    options: { body: 'Test body'}
   });
 }
 

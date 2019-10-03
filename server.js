@@ -70,7 +70,8 @@ app.post('/removesubscription', (request, response) => {
 });
 
 app.post('/notify-all', (request, response) => {
-  sendNotifications(subscriptions, request.body);
+  let notification = request.body.notification;
+  sendNotifications(subscriptions, notification);
   response.sendStatus(200);
 });
 
