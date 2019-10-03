@@ -3,17 +3,18 @@ const push = require('./push.js');
 function addSubscription(request, response) {
   let subscription = request.body;
   request.session.subscriptions = 
-    Object.assign({}, 
-    request.session.subscriptions)
-  
-  subscriptions[subscription.endpoint] = subscription;
+    Object.assign({}, request.session.subscriptions, {
+      [subscription.endpoint]: subscription
+    });
   response.sendStatus(200);
 }
 
 function removeSubscription(request, response) {
   let subscription = request.body;
-  let subscriptions = request.session.subscriptions;
-  delete subscriptions[subscription.endpoint];
+  request.session.subscriptions = 
+    Object.assign({}, request.session.subscriptions, {
+      [subscription.endpoint]: false
+    });
   response.sendStatus(200);
 }
 

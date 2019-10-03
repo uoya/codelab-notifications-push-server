@@ -26,7 +26,6 @@ function sendNotifications(subscriptions, notification) {
   let results = myArray.map((i) => {
     return sendNotification(subscriptions, subscriptions[i], notification);
   });
-  console.log(results);
 }
 
 function sendNotification(subscriptions, subscription, notification) { 
