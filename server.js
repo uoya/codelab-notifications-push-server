@@ -2,10 +2,10 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const app = express();
-
-const database = require('./database.js');
+const session = require('express-session');
 const handlers = require('./handlers.js');
 
+app.use(session());
 app.use(bodyparser.json());
 
 app.use(express.static('public'));

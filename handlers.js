@@ -1,31 +1,33 @@
+const push = require('./push.js');
 const database = require('./database.js');
-const actions = require('./actions.js');
 
 function addSubscription(request, response) {
   let subscription = request.body;
-  let subscriptions = database.getSubscriptions();
+  let subscriptions = request.session.subscriptions;
   subscriptions[subscription.endpoint] = subscription;
+  database.writeSubscriptions(subscriptions);
   response.sendStatus(200);
 }
 
 function removeSubscription(request, response) {
   let subscription = request.body;
-  let subscriptions = database.getSubscriptions();
+  let subscriptions = request.session.subscriptions;
   delete subscriptions[subscription.endpoint];
+  database.writeSubscriptions(subscriptions);
   response.sendStatus(200);
 }
 
 function notifyAll(request, response) {
-  let subscriptions = database.getSubscriptions();
+  let subscriptions = request.session.subscriptions;
   let notification = request.body.notification;
-  actions.sendNotifications(subscriptions, notification);
+  push.sendNotifications(subscriptions, notification);
   response.sendStatus(200);
 }
 
 function notifyMe(request, response) {
   let subscription = request.body.subscription;
   let notification = request.body.notification;
-  actions.sendNotification(subscription, notification);
+  push.sendNotification(subscription, notification);
   response.sendStatus(200);
 }
 

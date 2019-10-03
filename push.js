@@ -1,5 +1,4 @@
 const webpush = require('web-push');
-let subscriptions = require('./subscriptions.json');
 
 /*
 const vapidKeys = webpush.generateVAPIDKeys();
@@ -21,7 +20,7 @@ function sendNotifications(subscriptions, notification) {
   })
 }
 
-function sendNotification(subscription, notification) {  
+function sendNotification(subscriptions, subscription, notification) {  
   if (!(subscriptions[subscription.endpoint])) {
     return;
   }
