@@ -1,13 +1,13 @@
 const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
-const app = express();
 const session = require('express-session');
 const handlers = require('./handlers.js');
 
+const app = express();
+
 app.use(session());
 app.use(bodyparser.json());
-
 app.use(express.static('public'));
 
 app.post('/addsubscription', handlers.addSubscription);
@@ -18,7 +18,6 @@ app.post('/notify-me', handlers.notifyMe);
 app.get('/favicon.ico', (request, response) => {
   response.sendStatus(200);
 });
-
 app.get('/', (request, response) => {
   response.sendFile(__dirname + '/views/index.html');
 });

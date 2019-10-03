@@ -1,11 +1,9 @@
 const push = require('./push.js');
-const database = require('./database.js');
 
 function addSubscription(request, response) {
   let subscription = request.body;
   let subscriptions = request.session.subscriptions;
   subscriptions[subscription.endpoint] = subscription;
-  database.writeSubscriptions(subscriptions);
   response.sendStatus(200);
 }
 
@@ -13,7 +11,6 @@ function removeSubscription(request, response) {
   let subscription = request.body;
   let subscriptions = request.session.subscriptions;
   delete subscriptions[subscription.endpoint];
-  database.writeSubscriptions(subscriptions);
   response.sendStatus(200);
 }
 
