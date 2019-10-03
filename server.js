@@ -4,9 +4,7 @@ const bodyparser = require('body-parser');
 const app = express();
 
 const database = require('./database.js');
-
 const handlers = require('./handlers.js');
-const actions = require('./actions.js');
 
 app.use(bodyparser.json());
 
