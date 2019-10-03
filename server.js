@@ -2,6 +2,7 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const app = express();
+require('./handlers.js');
 
 app.use(bodyparser.json());
 
@@ -57,11 +58,7 @@ function sendNotification(subscription, notification) {
 
 app.use(express.static('public'));
 
-app.post('/addsubscription', (request, response) => {
-  let subscription = request.body;
-  subscriptions[subscription.endpoint] = subscription;
-  response.sendStatus(200);
-});
+app.post('/addsubscription', addSubscription);
 
 app.post('/removesubscription', (request, response) => {
   let subscription = request.body;
