@@ -2,8 +2,8 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const app = express();
-const mysql = require('my-sql');
 
+const database = require('./database.js');
 
 const handlers = require('./handlers.js');
 const actions = require('./actions.js');

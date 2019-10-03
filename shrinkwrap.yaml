@@ -1,6 +1,7 @@
 dependencies:
   body-parser: 1.19.0
   express: 4.16.4
+  mysql: 2.17.1
   web-push: 3.4.0
 packages:
   /accepts/1.3.5:
@@ -32,6 +33,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Q7hnYGGNYbcmGrCPulXfkEw7oW7qjWeM4ZTALmgpuIcZLxyqqKYWxCZg2UBm8bklrnB4m2mGyJPWfoktdORD8A==
+  /bignumber.js/7.2.1:
+    dev: false
+    resolution:
+      integrity: sha512-S4XzBk5sMB+Rcb/LNcpzXr57VRTxgAvaAEDAl1AwRx27j00hT84O6OkteE7u8UB3NuaaygCRrEpqox4uDOrbdQ==
   /bn.js/4.11.8:
     dev: false
     resolution:
@@ -108,6 +113,10 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
+  /core-util-is/1.0.2:
+    dev: false
+    resolution:
+      integrity: sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
   /debug/2.6.9:
     dependencies:
       ms: 2.0.0
@@ -299,6 +308,10 @@ packages:
       node: '>= 0.10'
     resolution:
       integrity: sha1-6qM9bd16zo9/b+DJygRA5wZzix4=
+  /isarray/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
   /jwa/1.4.1:
     dependencies:
       buffer-equal-constant-time: 1.0.1
@@ -379,6 +392,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
+  /mysql/2.17.1:
+    dependencies:
+      bignumber.js: 7.2.1
+      readable-stream: 2.3.6
+      safe-buffer: 5.1.2
+      sqlstring: 2.3.1
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha512-7vMqHQ673SAk5C8fOzTG2LpPcf3bNt0oL3sFpxPEEFp1mdlDcrLK0On7z8ZYKaaHrHwNcQ/MTUz7/oobZ2OyyA==
   /negotiator/0.6.1:
     dev: false
     engines:
@@ -403,6 +427,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=
+  /process-nextick-args/2.0.1:
+    dev: false
+    resolution:
+      integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
   /proxy-addr/2.0.4:
     dependencies:
       forwarded: 0.1.2
@@ -452,6 +480,18 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha512-4Oz8DUIwdvoa5qMJelxipzi/iJIi40O5cGV1wNYp5hvZP8ZN0T+jiNkL0QepXs+EsQ9XJ8ipEDoiH70ySUJP3Q==
+  /readable-stream/2.3.6:
+    dependencies:
+      core-util-is: 1.0.2
+      inherits: 2.0.4
+      isarray: 1.0.0
+      process-nextick-args: 2.0.1
+      safe-buffer: 5.1.2
+      string_decoder: 1.1.1
+      util-deprecate: 1.0.2
+    dev: false
+    resolution:
+      integrity: sha512-tQtKA9WIAhBF3+VLAseyMqZeBjW0AHJoxOtYqSUZNJxauErmLbVm2FW1y+J/YA9dUrAC39ITejlZWhVIwawkKw==
   /safe-buffer/5.1.2:
     dev: false
     resolution:
@@ -503,6 +543,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
+  /sqlstring/2.3.1:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-R1OT/56RR5rqYtyvDKPRSYOn+0A=
   /statuses/1.4.0:
     dev: false
     engines:
@@ -515,6 +561,12 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
+  /string_decoder/1.1.1:
+    dependencies:
+      safe-buffer: 5.1.2
+    dev: false
+    resolution:
+      integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   /toidentifier/1.0.0:
     dev: false
     engines:
@@ -549,6 +601,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-I/iQaabGL0bPOh07ABac77kL4MY=
+  /util-deprecate/1.0.2:
+    dev: false
+    resolution:
+      integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
   /utils-merge/1.0.1:
     dev: false
     engines:
@@ -581,4 +637,5 @@ shrinkwrapVersion: 3
 specifiers:
   body-parser: ^1.19.0
   express: ^4.16.4
+  mysql: ^2.17.1
   web-push: ^3.4.0
