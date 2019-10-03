@@ -26,9 +26,10 @@ function notifyAll(request, response) {
 }
 
 function notifyMe(request, response) {
+  let subscriptions = request.session.subscriptions;
   let subscription = request.body.subscription;
   let notification = request.body.notification;
-  push.sendNotification(subscription, notification);
+  push.sendNotification(subscriptions, subscription, notification);
   response.sendStatus(200);
 }
 
