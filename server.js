@@ -6,7 +6,11 @@ const handlers = require('./handlers.js');
 
 const app = express();
 
-app.use(session());
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'cats'
+}));
 app.use(bodyparser.json());
 app.use(express.static('public'));
 

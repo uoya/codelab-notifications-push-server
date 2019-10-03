@@ -23,26 +23,29 @@ const pushOptions = {
 
 function sendNotifications(subscriptions, notification) {
   let myArray = Object.keys(subscriptions);
-  myArray.map((i) => {
-    sendNotification(subscriptions, subscriptions[i], notification);
-  })
+  let results = myArray.map((i) => {
+    return sendNotification(subscriptions, subscriptions[i], notification);
+  });
+  console.log(results);
 }
 
 function sendNotification(subscriptions, subscription, notification) { 
   let endpoint = subscription.endpoint;
   if (!(subscriptions[endpoint])) {
-    return;
+    return false;
   }
   let id = endpoint.substr((endpoint.length - 8), endpoint.length);
   let options = Object.assign({}, pushOptions, { TTL: 9000 });
   let payload = JSON.stringify(notification);
   
-  webpush.sendNotification(subscription, payload, options)
-    .then((result) => { console.log(id, result.statusCode); })
-    .catch((error) => { 
-      console.log(id, error.body);
-      delete subscriptions[error.endpoint];
-    });
+  return webpush.sendNotification(subscription, payload, options)
+  .then((result) => { 
+    return { id: result.statusCode } 
+  })
+  .catch((error) => { 
+    delete subscriptions[error.endpoint];
+    return { id: error.body };
+  });
 }
 
 let push = {

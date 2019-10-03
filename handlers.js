@@ -2,7 +2,10 @@ const push = require('./push.js');
 
 function addSubscription(request, response) {
   let subscription = request.body;
-  let subscriptions = request.session.subscriptions;
+  request.session.subscriptions = 
+    Object.assign({}, 
+    request.session.subscriptions)
+  
   subscriptions[subscription.endpoint] = subscription;
   response.sendStatus(200);
 }
