@@ -1,3 +1,4 @@
+// Key used to identify the app s.
 const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
 
 // Convert a base64 string to Uint8Array.
@@ -148,31 +149,31 @@ async function unRegisterServiceWorker() {
 // Subscribe the user to push notifications. 
 // 
 // If permission state is: 
+// 
 //   * 'default', a popup asks the user to allow or block.
 //   * 'allow', notifications will be sent without a popup.
 //   * 'denied', both notifications and popup are blocked.
-// 
-// Wait for the subscription promise to resolve before
-// sending the new subscription info to the server.
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
-  if (registration && !subscription) {
-    let options = {
-      userVisibleOnly: true,
-      applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
-    };
-    subscription = await registration.pushManager.subscribe(options);
-    postToServer('/addsubscription', subscription);
-  }
+  // If no registration, can't subscribe.
+  // If already a subscription, no need to subscribe.
+  if (!registration || subscription) { return; }
+  let options = {
+    // Only notify if the user will actually see something
+    // on screen.
+    userVisibleOnly: true,
+    // Convert to format the server can understand.
+    applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
+  };
+  // Wait for the outcome of the subscription event before 
+  // telling the server about the new subscription and updating the UI.
+  subscription = await registration.pushManager.subscribe(options);
+  postToServer('/addsubscription', subscription);
   updateUI();
 }
 
 // Unsubscribe from push notifications.
-
-a service worker registration and subscribe
-// to push notifications if a push subscription does not 
-// already exist. 
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
   // Don't try to unsubscribe from a non-existent subscription
@@ -190,6 +191,8 @@ async function unSubscribeFromPush() {
   updateUI();
 }
 
+// Perform feature-detection, then if all is well,
+// update the UI. 
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {
     let message = 
@@ -201,4 +204,6 @@ async function initializePage() {
   updateUI();
 }
 
+// Wait for the page to load because you need to refer
+// to buttons and stuff. Could defer the script instead?
 window.onload = initializePage;
