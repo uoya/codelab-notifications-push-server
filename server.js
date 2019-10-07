@@ -2,7 +2,10 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const session = require('express-session');
+
+// Load the 
 const handlers = require('./handlers.js');
+
 
 const app = express();
 
