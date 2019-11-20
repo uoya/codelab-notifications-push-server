@@ -29,14 +29,18 @@ async function postToServer(url, data) {
 
 // Ask server to send a test notification to current subscription
 async function notifyMe() {
-  let subscription = await getSubscription();  
-  postToServer('/notify-me', { 
-    endpoint: subscription ? subscription.endpoint : ''
-  });
+  let subscription = await getSubscription();
+  if (!subscription || !subscription.endpoint) { 
+    console.log('No current subscription endpoint exists.');
+    return; 
+  }
+  console.log('Requesting test notification to', subscription.endpoint);
+  postToServer('/notify-me', { endpoint: subscription });
 }
 
-// Ask server to send a test notification all subscriptions
+// Ask server to send a test notification to all subscriptions
 async function notifyAll() {
+  console.log('Requesting test notification to all subscriptions');
   postToServer('/notify-all', {});
 }
 
@@ -75,9 +79,9 @@ async function updateUI() {
     regP.textContent = 'No service worker registration.'
     regButton.disabled = false;
   }
-  if (subscription) {
+  if (subscription && subscription.endpoint) {
     subP.textContent = 
-      'Subscription endpoint: ' + '' || subscription.endpoint;
+      'Subscription endpoint: ' + subscription.endpoint;
     unSubButton.disabled = false;
   } else {
     subP.textContent = 'No push subscription.'
@@ -131,9 +135,9 @@ async function subscribeToPush() {
 // Unsubscribe the user from push notifications
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
-  if (!subscription) { return; } 
+  if (!subscription || !subscription.endpoint) return;
   postToServer('/remove-subscription', { 
-    endpoint: subscription ? subscription.endpoint : ''
+    endpoint: subscription.endpoint
   });
   await subscription.unsubscribe();
   updateUI();
