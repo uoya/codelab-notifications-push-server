@@ -122,7 +122,7 @@ async function getSubscription() {
 
 // Register service worker, then update the UI
 async function registerServiceWorker() {
-  await navigator.serviceWorker.register('./serviceworker.js');
+  await navigator.serviceWorker.register('./service-worker.js');
   updateUI();
 }
 
