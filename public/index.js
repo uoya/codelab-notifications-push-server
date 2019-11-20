@@ -116,6 +116,7 @@ async function registerServiceWorker() {
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
   await registration.unregister();
+  console.log('Service worker has been unregistered.');
   updateUI();
 }
 
