@@ -85,7 +85,7 @@ async function updateUI() {
     unSubButton.disabled = false;
   } else {
     subP.textContent = 'No push subscription.'
-    if (registration) {
+    if (registration && VAPID_PUBLIC_KEY) {
       subButton.disabled = false;
     }
   }
