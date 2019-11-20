@@ -1,4 +1,4 @@
-const VAPID_PUBLIC_KEY = '';
+const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
 
 // Convert a base64 string to Uint8Array.
 // Must do this so the server can understand the VAPID_PUBLIC_KEY.
@@ -14,7 +14,7 @@ const urlB64ToUint8Array = (base64String) => {
   }
   return outputArray; 
 };
-
+;
 // Convenience function for creating XMLHttpRequests. 
 function createXhr(method, contentType, url) {
   let xhr = new XMLHttpRequest();
@@ -33,13 +33,24 @@ function createXhr(method, contentType, url) {
   return xhr;
 }
 
-// Send an XMLHttpRequest to a server URL.
 async function postToServer(url, data) {
+  
+  let response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  console.log(response);
+  
+  /* 
   // Since the app only needs to send POSTs with JSON,
   // the method and content types are hard-coded for now.
   let xhr = createXhr('POST', 'application/json', url);
   // Stringify the data. The server parses it back into an object.
   xhr.send(JSON.stringify(data));
+  */
 }
 
 // Request a test notification to one or all subscribers.
@@ -149,8 +160,20 @@ async function subscribeToPush() {
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   };
   subscription = await registration.pushManager.subscribe(options);
+  
   // Send the subscription to the server 
   postToServer('/add-subscription', subscription);
+  
+  /* 
+  let response = await fetch('/add-subscription', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(subscription)
+  });
+  console.log(response);
+  */
   updateUI();
 }
 

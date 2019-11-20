@@ -39,6 +39,7 @@ app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
   // TODO: implement handler for /add-subscription
+  console.log(request.body);
   response.sendStatus(200);
 });
 
