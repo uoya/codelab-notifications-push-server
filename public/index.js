@@ -31,7 +31,7 @@ async function postToServer(url, data) {
 async function notifyMe() {
   let subscription = await getSubscription();  
   postToServer('/notify-me', { 
-    endpoint: subscription.endpoint 
+    endpoint: subscription ? subscription.endpoint : ''
   });
 }
 
@@ -52,7 +52,9 @@ async function updateUI() {
   let subButton = document.getElementById('subscribe');
   let unRegButton = document.getElementById('unregister');
   let unSubButton = document.getElementById('unsubscribe');
-  
+  let notifyMeButton = document.getElementById('notify-me');
+  let notifyAllButton = document.getElementById('notify-all');
+
   // Reset all UI elements
   regP.textContent = '';
   subP.textContent = '';
@@ -60,6 +62,8 @@ async function updateUI() {
   subButton.disabled = true;
   unRegButton.disabled = true;
   unSubButton.disabled = true;
+  notifyMeButton.disabled = false;
+  notifyAllButton.disabled = false;
   
   // Set state of UI elements based on registration 
   // and subscription states
@@ -73,7 +77,7 @@ async function updateUI() {
   }
   if (subscription) {
     subP.textContent = 
-      'Subscription endpoint: ' + subscription.endpoint;
+      'Subscription endpoint: ' + '' || subscription.endpoint;
     unSubButton.disabled = false;
   } else {
     subP.textContent = 'No push subscription.'
@@ -120,33 +124,28 @@ async function subscribeToPush() {
     userVisibleOnly: true,
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   });
-  if (subscription.endpoint) {
-    postToServer('/add-subscription', subscription);
-  }
+  postToServer('/add-subscription', subscription);
   updateUI();
 }
 
 // Unsubscribe the user from push notifications
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
-  if (!subscription) { 
-    return; 
-  } 
-  // Tell the server to remove the subscription
-  postToServer('/remove-subscription', { endpoint: subscription.endpoint });
+  if (!subscription) { return; } 
+  postToServer('/remove-subscription', { 
+    endpoint: subscription ? subscription.endpoint : ''
+  });
   await subscription.unsubscribe();
   updateUI();
 }
 
-// Perform feature-detection and update the UI
-const isServiceWorkerCapable = 'serviceWorker' in navigator;
-const isPushCapable = 'PushManager' in window;
+// Perform feature-detection, update the UI
 async function initializePage() {
-  if (!isServiceWorkerCapable || !isPushCapable) {
-    let message = 
-      'User agent must be service worker- ' + 
-      'and push-capable to use this page.';
-    console.log(message);
+  const isServiceWorkerCapable = 'serviceWorker' in navigator;
+  const isPushCapable = 'PushManager' in window;
+  if (!isServiceWorkerCapable || !isPushCapable) {      
+    console.log('User agent must be service worker- ' + 
+                'and push-capable to use this page.');
     return;
   }
   updateUI();

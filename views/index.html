@@ -13,11 +13,13 @@
         No service worker registration.
       </p>
       <button 
+        disabled="true"    
         id="register"
         onclick="registerServiceWorker()">
         Register service worker
       </button>
       <button 
+        disabled="true"    
         id="unregister"
         onclick="unRegisterServiceWorker()">
         Unregister service worker
@@ -28,11 +30,13 @@
         No push subscription.
       </p>
       <button 
+        disabled="true"    
         id="subscribe"
         onclick="subscribeToPush()">
         Subscribe to push
       </button>
       <button 
+        disabled="true"    
         id="unsubscribe"
         onclick="unSubscribeFromPush()">
         Unsubscribe from push
@@ -40,10 +44,14 @@
     </div>
     <div>
       <button 
+        disabled="true"    
+        id="notify-me"
         onclick="notifyMe()">
         Send test notification to current subscription
       </button>
       <button 
+        disabled="true"    
+        id="notify-all"
         onclick="notifyAll()">
         Send test notification to all subscriptions
       </button>
