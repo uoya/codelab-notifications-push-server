@@ -1,5 +1,4 @@
-// Key used to identify the app server and client to each other.
-const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
+const VAPID_PUBLIC_KEY = '';
 
 // Convert a base64 string to Uint8Array.
 // Must do this so the server can understand the VAPID_PUBLIC_KEY.
@@ -16,10 +15,6 @@ const urlB64ToUint8Array = (base64String) => {
   return outputArray; 
 };
 
-// Create a couple of booleans to use in 
-// feature-detection for service worker and push.
-const isServiceWorkerCapable = 'serviceWorker' in navigator;
-const isPushCapable = 'PushManager' in window;
 
 // Convenience function for creating XMLHttpRequests. 
 // Used to send stuff to the server.
@@ -148,7 +143,7 @@ async function registerServiceWorker() {
   updateUI();
 }
 
-// Unregister a service worker, then update the UI.
+// Unregister service worker, then update the UI.
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
   // Await the outcome of the unregistration attempt
@@ -175,13 +170,13 @@ async function subscribeToPush() {
     // Only notify if the user will actually see something
     // on screen.
     userVisibleOnly: true,
-    // Convert to format the server can understand.
+    // Convert VAPID key to a format the server can understand.
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   };
   // Wait for the outcome of the subscription attempt before 
   // telling the server about the new subscription and updating the UI.
   subscription = await registration.pushManager.subscribe(options);
-  postToServer('/addsubscription', subscription);
+  postToServer('/add-subscription', subscription);
   updateUI();
 }
 
@@ -195,7 +190,7 @@ async function unSubscribeFromPush() {
   } 
   // Tell the server about the soon-to-be invalid subscription,
   // then unsubscribe.
-  postToServer('/removesubscription', subscription);
+  postToServer('/remove-subscription', subscription);
   // Wait for the unsubscription promise to resolve 
   // before updating the UI, otherwise the change
   // might occur after the UI update.
@@ -203,8 +198,9 @@ async function unSubscribeFromPush() {
   updateUI();
 }
 
-// Perform feature-detection, then if all is well,
-// update the UI. 
+// Perform feature-detection, then update the UI.
+const isServiceWorkerCapable = 'serviceWorker' in navigator;
+const isPushCapable = 'PushManager' in window;
 async function initializePage() {
   if (!isServiceWorkerCapable || !isPushCapable) {
     let message = 
@@ -216,6 +212,4 @@ async function initializePage() {
   updateUI();
 }
 
-// Wait for the page to load because you need to refer
-// to buttons and stuff. Could defer the script instead?
 window.onload = initializePage;
