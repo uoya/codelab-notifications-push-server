@@ -14,66 +14,37 @@ const urlB64ToUint8Array = (base64String) => {
   }
   return outputArray; 
 };
-;
-// Convenience function for creating XMLHttpRequests. 
-function createXhr(method, contentType, url) {
-  let xhr = new XMLHttpRequest();
-  let loadHandler = (event) => { 
-    let text = event.srcElement.responseText;
-    let status = event.srcElement.status;
-    console.log(url, status, text);
-  };
-  let errorHandler = (error) => {
-    console.log(error);
-  }
-  xhr.onload = loadHandler;
-  xhr.onerror = errorHandler;
-  xhr.open(method, url);
-  xhr.setRequestHeader('Content-Type', contentType);
-  return xhr;
-}
 
+// Send a request to one of the server's POST URLs
 async function postToServer(url, data) {
-  
   let response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  });
-  console.log(response);
-  
-  /* 
-  // Since the app only needs to send POSTs with JSON,
-  // the method and content types are hard-coded for now.
-  let xhr = createXhr('POST', 'application/json', url);
-  // Stringify the data. The server parses it back into an object.
-  xhr.send(JSON.stringify(data));
-  */
+  }).catch(console.log);
+  console.log(url, response.status);
 }
 
-// Request a test notification to one or all subscribers.
-async function sendNotification(who) {
+// Ask server to send a test notification to current subscription
+async function notifyMe() {
   let subscription = await getSubscription();  
-  // POST to either '/notify-all' or 'notify-me',
-  // depending on which button was clicked.
-  if (who === 'me') {
-    postToServer('/notify-me', { 
-      endpoint: subscription.endpoint 
-    });
-  } 
-  if (who === 'all') {
-    postToServer('/notify-all', {});
-  }
+  postToServer('/notify-me', { 
+    endpoint: subscription.endpoint 
+  });
+}
+
+// Ask server to send a test notification all subscriptions
+async function notifyAll() {
+  postToServer('/notify-all', {});
 }
 
 // Refresh onscreen messages, set up UI.
 // 
 // Note that the "Send notification" buttons are always
-// active, whether or not a subscription exists. The server
-// needs to figure out what to do with notifications 
-// to nowhere, or malformed/non-existent/expired subscriptions.
+// active. The server should gracefully handle non-existent 
+// or expired subscriptions.
 async function updateUI() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
