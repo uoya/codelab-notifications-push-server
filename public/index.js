@@ -41,25 +41,21 @@ async function notifyAll() {
 }
 
 // Refresh onscreen messages, set up UI.
-// 
-// Note that the "Send notification" buttons are always
-// active. The server should gracefully handle non-existent 
-// or expired subscriptions.
 async function updateUI() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
   
   // Get references to elements on the page
-  let reg = document.getElementById('registration');
-  let sub = document.getElementById('subscription');
+  let regP = document.getElementById('registration-status-message');
+  let subP = document.getElementById('subscription-status-message');
   let regButton = document.getElementById('register');
   let subButton = document.getElementById('subscribe');
   let unRegButton = document.getElementById('unregister');
   let unSubButton = document.getElementById('unsubscribe');
   
   // Reset all UI elements
-  reg.textContent = '';
-  sub.textContent = '';
+  regP.textContent = '';
+  subP.textContent = '';
   regButton.disabled = true;
   subButton.disabled = true;
   unRegButton.disabled = true;
@@ -68,19 +64,19 @@ async function updateUI() {
   // Set state of UI elements based on registration 
   // and subscription states
   if (registration) {
-    reg.textContent = 
+    regP.textContent = 
       'Service worker registered. Scope: ' + registration.scope;
     unRegButton.disabled = false;
   } else {
-    reg.textContent = 'No service worker registration.'
+    regP.textContent = 'No service worker registration.'
     regButton.disabled = false;
   }
   if (subscription) {
-    sub.textContent = 
+    subP.textContent = 
       'Subscription endpoint: ' + subscription.endpoint;
     unSubButton.disabled = false;
   } else {
-    sub.textContent = 'No push subscription.'
+    subP.textContent = 'No push subscription.'
     if (registration) {
       subButton.disabled = false;
     }
@@ -115,36 +111,18 @@ async function unRegisterServiceWorker() {
   updateUI();
 }
 
-// Subscribe the user to push notifications. 
-// 
-// If permission state is: 
-// 
-//   * 'default', a popup asks the user to allow or block.
-//   * 'granted', notifications will be sent without a popup.
-//   * 'denied', notifications and popup are both blocked.
+// Subscribe the user to push notifications
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
   if (!registration || subscription) { return; }
-  let options = {
+  subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
-  };
-  subscription = await registration.pushManager.subscribe(options);
-  
-  // Send the subscription to the server 
-  postToServer('/add-subscription', subscription);
-  
-  /* 
-  let response = await fetch('/add-subscription', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(subscription)
   });
-  console.log(response);
-  */
+  if (subscription.endpoint) {
+    postToServer('/add-subscription', subscription);
+  }
   updateUI();
 }
 
