@@ -15,9 +15,7 @@ const urlB64ToUint8Array = (base64String) => {
   return outputArray; 
 };
 
-
 // Convenience function for creating XMLHttpRequests. 
-// Used to send stuff to the server.
 function createXhr(method, contentType, url) {
   let xhr = new XMLHttpRequest();
   let loadHandler = (event) => { 
@@ -44,38 +42,32 @@ async function postToServer(url, data) {
   xhr.send(JSON.stringify(data));
 }
 
-// Create a notification. Send it to a server URL
-// to trigger push notification/s.
+// Request a test notification to one or all subscribers.
 async function sendNotification(who) {
-  let subscription = await getSubscription();
-  // Include a random number to help tell the
-  // difference between test notifications.
-  let randy = Math.floor(Math.random() * 100);
-  let notification = {
-    title: 'Test ' + randy, 
-    options: { body: 'Test body ' + randy }
-  };
-  // Post to either '/notify-all' or 'notify-me',
+  let subscription = await getSubscription();  
+  // POST to either '/notify-all' or 'notify-me',
   // depending on which button was clicked.
-  postToServer('/notify-' + who, {
-    subscription: subscription,
-    notification: notification
-  });
+  if (who === 'me') {
+    postToServer('/notify-me', { 
+      endpoint: subscription.endpoint 
+    });
+  } 
+  if (who === 'all') {
+    postToServer('/notify-all', {});
+  }
 }
 
-// Refresh the onscreen messages and make sure only 
-// the buttons that make sense are active. 
+// Refresh onscreen messages, set up UI.
 // 
 // Note that the "Send notification" buttons are always
 // active, whether or not a subscription exists. The server
 // needs to figure out what to do with notifications 
 // to nowhere, or malformed/non-existent/expired subscriptions.
 async function updateUI() {
-  // Get the current registration and subscription states.
   let registration = await getRegistration();
   let subscription = await getSubscription();
   
-  // Get a bunch of references to elements on the page.
+  // Get references to elements on the page
   let reg = document.getElementById('registration');
   let sub = document.getElementById('subscription');
   let regButton = document.getElementById('register');
@@ -83,7 +75,7 @@ async function updateUI() {
   let unRegButton = document.getElementById('unregister');
   let unSubButton = document.getElementById('unsubscribe');
   
-  // Reset all UI elements.
+  // Reset all UI elements
   reg.textContent = '';
   sub.textContent = '';
   regButton.disabled = true;
@@ -91,9 +83,8 @@ async function updateUI() {
   unRegButton.disabled = true;
   unSubButton.disabled = true;
   
-  // Work out what the state of all UI elements
-  // should be, based on registration and 
-  // subscription states.
+  // Set state of UI elements based on registration 
+  // and subscription states
   if (registration) {
     reg.textContent = 
       'Service worker registered. Scope: ' + registration.scope;
@@ -108,23 +99,18 @@ async function updateUI() {
     unSubButton.disabled = false;
   } else {
     sub.textContent = 'No push subscription.'
-    // Can only subscribe if registration exists.
     if (registration) {
       subButton.disabled = false;
     }
   }
 }
 
-// Get the current service worker registration.
-// Returns a Promise that resolves to a 
-// ServiceWorkerRegistration object, or undefined.
+// Get current service worker registration, if any
 async function getRegistration() {
   return navigator.serviceWorker.getRegistration();
 }
 
-// Get the current subscription. Returns a Promise
-// that resolves to a PushSubscription object 
-// if one exists, or null.
+// Get current push subscription, if any
 async function getSubscription() {
   let registration = await getRegistration();
   if (!(registration && registration.active)) {
@@ -134,21 +120,15 @@ async function getSubscription() {
   }
 }
 
-// Register a service worker, then update the UI.
+// Register service worker, then update the UI
 async function registerServiceWorker() {
-  // Await the outcome of the registration attempt
-  // so that the UI update is not superceded by a 
-  // returning Promise.
   await navigator.serviceWorker.register('./serviceworker.js');
   updateUI();
 }
 
-// Unregister service worker, then update the UI.
+// Unregister service worker, then update the UI
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
-  // Await the outcome of the unregistration attempt
-  // so that the UI update is not superceded by a 
-  // returning Promise.
   await registration.unregister();
   updateUI();
 }
@@ -163,42 +143,30 @@ async function unRegisterServiceWorker() {
 async function subscribeToPush() {
   let registration = await getRegistration();
   let subscription = await getSubscription();
-  // If no registration, can't subscribe.
-  // If already a subscription, no need to subscribe.
   if (!registration || subscription) { return; }
   let options = {
-    // Only notify if the user will actually see something
-    // on screen.
     userVisibleOnly: true,
-    // Convert VAPID key to a format the server can understand.
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   };
-  // Wait for the outcome of the subscription attempt before 
-  // telling the server about the new subscription and updating the UI.
   subscription = await registration.pushManager.subscribe(options);
+  // Send the subscription to the server 
   postToServer('/add-subscription', subscription);
   updateUI();
 }
 
-// Unsubscribe from push notifications.
+// Unsubscribe the user from push notifications
 async function unSubscribeFromPush() {
   let subscription = await getSubscription();
-  // Don't try to unsubscribe from a non-existent subscription
-  // because this would throw an error. 
   if (!subscription) { 
     return; 
   } 
-  // Tell the server about the soon-to-be invalid subscription,
-  // then unsubscribe.
-  postToServer('/remove-subscription', subscription);
-  // Wait for the unsubscription promise to resolve 
-  // before updating the UI, otherwise the change
-  // might occur after the UI update.
+  // Tell the server to remove the subscription
+  postToServer('/remove-subscription', { endpoint: subscription.endpoint });
   await subscription.unsubscribe();
   updateUI();
 }
 
-// Perform feature-detection, then update the UI.
+// Perform feature-detection and update the UI
 const isServiceWorkerCapable = 'serviceWorker' in navigator;
 const isPushCapable = 'PushManager' in window;
 async function initializePage() {

@@ -1,4 +1,4 @@
-console.log('Hello from serviceworker.js');
+console.log('Hello from service-worker.js');
 
 self.addEventListener('push', (event) => {
   let notification = event.data.json();
