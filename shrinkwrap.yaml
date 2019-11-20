@@ -2,7 +2,7 @@ dependencies:
   body-parser: 1.19.0
   express: 4.16.4
   express-session: 1.16.2
-  web-push: 3.4.0
+  web-push: 3.4.1
 packages:
   /accepts/1.3.5:
     dependencies:
@@ -282,7 +282,7 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-bptAfCDdPJxOs5zYSe7Y3lpr772s1G346R4Td5LgRUeCwIGpCGDUTJxRrhTNcAXbx37spge0kWEIH7QAYWNTlA==
-  /https-proxy-agent/2.2.2:
+  /https-proxy-agent/3.0.1:
     dependencies:
       agent-base: 4.3.0
       debug: 3.2.6
@@ -290,7 +290,7 @@ packages:
     engines:
       node: '>= 4.5.0'
     resolution:
-      integrity: sha512-c8Ndjc9Bkpfx/vCJueCPy0jlP4ccCCSNDp8xwCZzPjKJUm+B+u9WX2x98Qx4n1PiMNTWo3D7KK5ifNV/yJyRzg==
+      integrity: sha512-+ML2Rbh6DAuee7d07tYGEKOEi2voWPUGan+ExdPbPW6Z3svq+JCqr0v8WmKPOkz1vOVykPCBSuobe7G8GJUtVg==
   /iconv-lite/0.4.23:
     dependencies:
       safer-buffer: 2.1.2
@@ -609,11 +609,11 @@ packages:
       node: '>= 0.8'
     resolution:
       integrity: sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
-  /web-push/3.4.0:
+  /web-push/3.4.1:
     dependencies:
       asn1.js: 5.2.0
       http_ece: 1.1.0
-      https-proxy-agent: 2.2.2
+      https-proxy-agent: 3.0.1
       jws: 3.2.2
       minimist: 1.2.0
       urlsafe-base64: 1.0.0
@@ -622,7 +622,7 @@ packages:
       node: '>= 6'
     hasBin: true
     resolution:
-      integrity: sha512-weFBdWDB9hLj8ZQLjmYotmU2VWAB9rRDTuFezJL3F3Dm/V56yZ03bCvS5n5qwHPkEZ71gOdcEDffbO/P5VdZHA==
+      integrity: sha512-wtx18llPtWWW+x8hv+Gxvz+2VjO+vZuyihInsjySNpNGNVswH1Bb2KkbbCtE96yi52VUmbFMdidxM8kJAPaSWQ==
 registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
@@ -630,4 +630,4 @@ specifiers:
   body-parser: ^1.19.0
   express: ^4.16.4
   express-session: ^1.16.2
-  web-push: ^3.4.0
+  web-push: ^3.4.1

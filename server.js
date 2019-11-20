@@ -32,14 +32,13 @@ const app = express();
 app.use(session({
   resave: false,
   saveUninitialized: true,
-  secret: 'cats'
+  secret: 'CATS. CATS ARE NICE.'
 }));
 app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
   // TODO: implement handler for /add-subscription
-  console.log(request.body);
   response.sendStatus(200);
 });
 

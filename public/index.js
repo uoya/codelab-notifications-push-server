@@ -1,4 +1,4 @@
-const VAPID_PUBLIC_KEY = 'BLNuAat43YdqpTNKEZFXqUp8uJAriWOzLBWtVAvWy6Axbusnedn8bm4EpLGqCFxGzyjl4-c9GP9sJ5XheswDjTA';
+const VAPID_PUBLIC_KEY = '';
 
 // Convert a base64 string to Uint8Array.
 // Must do this so the server can understand the VAPID_PUBLIC_KEY.
