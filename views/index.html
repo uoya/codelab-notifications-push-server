@@ -8,41 +8,64 @@
     <script src="index.js"></script>
   </head>
   <body>
-    <div>
-      <p id="registration-status-message">
-        No service worker registration.
-      </p>
-      <button 
-        disabled="true"    
-        id="register"
-        onclick="registerServiceWorker()">
-        Register service worker
-      </button>
-      <button 
-        disabled="true"    
-        id="unregister"
-        onclick="unRegisterServiceWorker()">
-        Unregister service worker
-      </button>
+    <div class="app">
+      <h2>
+        My App
+      </h2>
+      <div>
+        <p id="registration-status-message">
+          No service worker registration.
+        </p>
+        <button 
+          disabled="true"    
+          id="register"
+          onclick="registerServiceWorker()">
+          Register service worker
+        </button>
+        <button 
+          disabled="true"    
+          id="unregister"
+          onclick="unRegisterServiceWorker()">
+          Unregister service worker
+        </button>
+      </div>
+      <div>
+        <p id="subscription-status-message">
+          No push subscription.
+        </p>
+        <button 
+          disabled="true"    
+          id="subscribe"
+          onclick="subscribeToPush()">
+          Subscribe to push
+        </button>
+        <button 
+          disabled="true"    
+          id="unsubscribe"
+          onclick="unSubscribeFromPush()">
+          Unsubscribe from push
+        </button>
+      </div>
     </div>
-    <div>
-      <p id="subscription-status-message">
-        No push subscription.
-      </p>
-      <button 
-        disabled="true"    
-        id="subscribe"
-        onclick="subscribeToPush()">
-        Subscribe to push
-      </button>
-      <button 
-        disabled="true"    
-        id="unsubscribe"
-        onclick="unSubscribeFromPush()">
-        Unsubscribe from push
-      </button>
+    <div class="testing">
+      <h2>
+        Server testing
+      </h2>
+      <div>
+        <button 
+          disabled="true"    
+          id="notify-me"
+          onclick="notifyMe()">
+          Send test notification to current subscription
+        </button>
+        <button 
+          disabled="true"    
+          id="notify-all"
+          onclick="notifyAll()">
+          Send test notification to all subscriptions
+        </button>
+      </div>
     </div>
-    
     <!-- include the Glitch button to show what the webpage is about and
           to make it easier for folks to view source and remix -->
     <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
