@@ -23,8 +23,10 @@ html {
   border: 1px solid;
   background: none;
   padding: 0 15px 0 15px;
+  margin: 4px 0 4px 0;
   border-radius: 4px;
   font-size: 0.875rem;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08929em;
   height: 36px;
@@ -32,10 +34,29 @@ html {
 }
 
 .app button[disabled] {
-  color: #FFFFFF;
-  background-color: #DDDDDD;
+  color: #AAAAAA;
 }
+
+.app div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 0px;
+  border-radius: 4px;
+  border: 1px solid #EEEEEE;
+  margin-bottom: 16px;
+}
+
+.app div header {
+  background-color: #EEEEEE;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  padding: 32px 15px 32px 15px;
+  font-size: 20px;
+}
+
 
 #registration-status-message {
   height: 64px;
+  margin: 16px;
 }
