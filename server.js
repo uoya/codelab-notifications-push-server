@@ -9,23 +9,30 @@ const session = require('express-session');
  * console.log(vapidKeys);
  */
 
-// Get VAPID details from environment variables.
 const vapidDetails = {
-  publicKey: process.env.VAPID_PUBLIC_KEY,
-  privateKey: process.env.VAPID_PRIVATE_KEY,
-  subject: process.env.VAPID_SUBJECT
+  // TODO: Load VAPID details from environment variables.
 }
 
 // Create a test notification.
 function createNotification() {
-  // Include a random number to help tell the
-  // difference between test notifications.
+  // Insert a random number in the title and body text.
+  // This just helps you identify notifications while
+  // playing around with them
   let randy = Math.floor(Math.random() * 100);
   let notification = {
     title: 'Test ' + randy, 
-    options: { body: 'Test body ' + randy }
+    options: { 
+      body: 'Test body ' + randy
+      // More options here, e.g icons, actions, etc
+    }
   };
   return notification;
+}
+
+function sendNotifications(database, endpoints) {
+  // TODO: Implement functionality to send notifications.
+  console.log('TODO: Implement sendNotifications()');
+  console.log('Endpoints to send to: ', endpoints);
 }
 
 const app = express();
@@ -39,21 +46,28 @@ app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
   // TODO: implement handler for /add-subscription
+  console.log('TODO: Implement handler for /add-subscription');
+  console.log('Request body: ', request.body);
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
   // TODO: implement handler for /remove-subscription
+  console.log('TODO: Implement handler for /remove-subscription');
+  console.log('Request body: ', request.body);
   response.sendStatus(200);
 });
 
 app.post('/notify-me', (request, response) => {
-  sendNotification({subscription: })
+  let endpoint = request.body.endpoint;
+  let database = Object.assign({}, request.session.subscriptions);
+  sendNotifications(database, [endpoint]);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
-  sendNotification({});
+  let database = Object.assign({}, request.session.subscriptions);
+  sendNotifications(database, Object.keys(database));
   response.sendStatus(200);
 });
 

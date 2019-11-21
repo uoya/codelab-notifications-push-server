@@ -109,6 +109,8 @@ async function getSubscription() {
 // Register service worker, then update the UI
 async function registerServiceWorker() {
   await navigator.serviceWorker.register('./service-worker.js');
+  let registration = await getRegistration();
+  console.log('Servce worker registered. Scope:', registration.scope);
   updateUI();
 }
 
