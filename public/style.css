@@ -7,13 +7,33 @@ html {
   font-family: Roboto, sans-serif;
 }
 
-.app h2 {
+.app h2, .app button {
+  background-color: #6200ee;
   width: 100%;
+
+}
+
+.app h2 {
   line-height: 24px;
-  padding: 8px;
   background-color: #123456;
 }
 
 .app button {
-  padding: 8px 0px 8px 0px;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  color: #FFFFFF;
+  background-color: #6200ee;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.app button[disabled] {
+  color: #FFFFFF;
+  background-color: #DDDDDD;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
 }
