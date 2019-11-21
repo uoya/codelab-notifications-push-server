@@ -9,37 +9,17 @@
   </head>
   <body>
     <div>
-      <p id="registration-status-message">
-        No service worker registration.
-      </p>
       <button 
         disabled="true"    
-        id="register"
-        onclick="registerServiceWorker()">
-        Register service worker
+        id="notify-me"
+        onclick="notifyMe()">
+        Send test notification to current subscription
       </button>
       <button 
         disabled="true"    
-        id="unregister"
-        onclick="unRegisterServiceWorker()">
-        Unregister service worker
-      </button>
-    </div>
-    <div>
-      <p id="subscription-status-message">
-        No push subscription.
-      </p>
-      <button 
-        disabled="true"    
-        id="subscribe"
-        onclick="subscribeToPush()">
-        Subscribe to push
-      </button>
-      <button 
-        disabled="true"    
-        id="unsubscribe"
-        onclick="unSubscribeFromPush()">
-        Unsubscribe from push
+        id="notify-all"
+        onclick="notifyAll()">
+        Send test notification to all subscriptions
       </button>
     </div>
     
