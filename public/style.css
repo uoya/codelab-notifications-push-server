@@ -7,33 +7,35 @@ html {
   font-family: Roboto, sans-serif;
 }
 
-.app h2, .app button {
+.app h2 {
   background-color: #6200ee;
   width: 100%;
-
-}
-
-.app h2 {
-  line-height: 24px;
-  background-color: #123456;
+  padding: 8px;
+  font-weight: 500;
+  color: #FFFFFF;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  font-size: 20; 
 }
 
 .app button {
-  padding: 8px;
-  border: none;
+  color: #6200ee;
+  border: 1px solid;
+  background: none;
+  padding: 0 15px 0 15px;
   border-radius: 4px;
-  color: #FFFFFF;
-  background-color: #6200ee;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 0.875rem;
   text-transform: uppercase;
+  letter-spacing: 0.08929em;
+  height: 36px;
   width: 100%;
 }
 
 .app button[disabled] {
   color: #FFFFFF;
   background-color: #DDDDDD;
-  font-size: 16px;
-  font-weight: 500;
-  text-transform: uppercase;
+}
+
+#registration-status-message {
+  height: 64px;
 }
