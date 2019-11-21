@@ -45,14 +45,14 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
-  // TODO: implement handler for /add-subscription
+  // TODO: Handle new subscriptions
   console.log('TODO: Implement handler for /add-subscription');
   console.log('Request body: ', request.body);
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
-  // TODO: implement handler for /remove-subscription
+  // TODO: Handle subscription cancellations
   console.log('TODO: Implement handler for /remove-subscription');
   console.log('Request body: ', request.body);
   response.sendStatus(200);
