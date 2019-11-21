@@ -48,12 +48,12 @@ app.post('/remove-subscription', (request, response) => {
 });
 
 app.post('/notify-me', (request, response) => {
-  // TODO: implement handler for /notify-me
+  sendNotification({subscription: })
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
-   // TODO: implement handler for /notify-all
+  sendNotification({});
   response.sendStatus(200);
 });
 
