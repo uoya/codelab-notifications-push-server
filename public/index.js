@@ -35,7 +35,7 @@ async function notifyMe() {
     return; 
   }
   console.log('Requesting test notification to', subscription.endpoint);
-  postToServer('/notify-me', { endpoint: subscription });
+  postToServer('/notify-me', { endpoint: subscription.endpoint });
 }
 
 // Ask server to send a test notification to all subscriptions
