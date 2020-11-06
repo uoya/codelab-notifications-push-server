@@ -63,16 +63,17 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
-  let subscriptions = Object.assign({}, request.session.subscriptions);
-  subscriptions[request.body.endpoint] = request.body;
-  request.session.subscriptions = subscriptions;
+  if (!request.session.subscriptions) request.session.subscriptions = {};
+  request.session.subscriptions[request.body.endpoint] = request.body;
+  console.log(request.body);
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
-  let subscriptions = Object.assign({}, request.session.subscriptions);
-  delete subscriptions[request.body.endpoint];
-  request.session.subscriptions = subscriptions;
+  if (request.session.subscriptions[request.body.endpoint]) {
+    delete request.session.subscriptions[request.body.endpoint];
+    console.log(request.body.endpoint); 
+  }
   response.sendStatus(200);
 });
 
