@@ -2,6 +2,10 @@ const express = require('express');
 const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const session = require('express-session');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+const adapter = new FileSync('.data/db.json');
+const db = low(adapter);
 
 // { publicKey: 'BOyFjA9NR-Bf9lSB_T9EOqAMZ_pwMLZEwGC9QPBD8AQgGCeR3QUcKFRihphzsC9bzrFiAYZr2wOgy4SlIiFhok4',
 //   privateKey: 'YneqpztUhGVl8jNNtK8FTR1CKm7ERKY4lYHynM-RS4I' }
@@ -33,6 +37,7 @@ function createNotification() {
 }
 
 function sendNotifications(database, endpoints) {
+  console.log(endpoints.length);
   let notification = JSON.stringify(createNotification());
   let options = {
     TTL: 10000, // Time-to-live. Notifications expire after this.
@@ -63,9 +68,12 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
-  if (!request.session.subscriptions) request.session.subscriptions = {};
-  request.session.subscriptions[request.body.endpoint] = request.body;
-  console.info(`Subscribed ${request.body.endpoint}`);
+  // if (!request.session.subscriptions) request.session.subscriptions = {};
+  // request.session.subscriptions[request.body.endpoint] = request.body;
+  // console.info(`Subscribed ${request.body.endpoint}`);
+  db.get('subscriptions')
+    .push(request.body)
+    .write();
   response.sendStatus(200);
 });
 
