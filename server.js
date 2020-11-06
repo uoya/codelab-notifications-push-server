@@ -33,9 +33,24 @@ function createNotification() {
 }
 
 function sendNotifications(database, endpoints) {
-  // TODO: Implement functionality to send notifications.
-  console.log('TODO: Implement sendNotifications()');
-  console.log('Endpoints to send to: ', endpoints);
+  let notification = JSON.stringify(createNotification());
+  let options = {
+    TTL: 10000, // Time-to-live. Notifications expire after this.
+    vapidDetails: vapidDetails // VAPID keys from .env
+  };
+  endpoints.map(endpoint => {
+    let subscription = database[endpoint];
+    let id = endpoint.substr((endpoint.length - 8), endpoint.length);
+    webpush.sendNotification(subscription, notification, options)
+    .then(result => {
+      console.log(`Endpoint ID: ${id}`);
+      console.log(`Result: ${result.statusCode} `);
+    })
+    .catch(error => {
+      console.log(`Endpoint ID: ${id}`);
+      console.log(`Error: ${error.body} `);
+    });
+  });
 }
 
 const app = express();
@@ -48,16 +63,16 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
-  // TODO: Handle new subscriptions
-  console.log('TODO: Implement handler for /add-subscription');
-  console.log('Request body: ', request.body);
+  let subscriptions = Object.assign({}, request.session.subscriptions);
+  subscriptions[request.body.endpoint] = request.body;
+  request.session.subscriptions = subscriptions;
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
-  // TODO: Handle subscription cancellations
-  console.log('TODO: Implement handler for /remove-subscription');
-  console.log('Request body: ', request.body);
+  let subscriptions = Object.assign({}, request.session.subscriptions);
+  delete subscriptions[request.body.endpoint];
+  request.session.subscriptions = subscriptions;
   response.sendStatus(200);
 });
 
