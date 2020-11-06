@@ -78,7 +78,7 @@ app.post('/add-subscription', (request, response) => {
   // console.info(`Subscribed ${request.body.endpoint}`);
   console.log(request.body);
   db.get('subscriptions')
-    .push(JSON.stringify(request.body))
+    .push(request.body)
     .write();
   response.sendStatus(200);
 });
@@ -88,6 +88,9 @@ app.post('/remove-subscription', (request, response) => {
   //   delete request.session.subscriptions[request.body.endpoint];
   //   console.info(`Deleted ${request.body.endpoint}`);
   // }
+  db.get('subscriptions')
+    .find({endpoint: request.body.endpoint})
+    .remove();
   response.sendStatus(200);
 });
 
