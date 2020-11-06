@@ -164,14 +164,24 @@ async function unSubscribeFromPush() {
 
 // Perform feature-detection, update the UI
 async function initializePage() {
-  const isServiceWorkerCapable = 'serviceWorker' in navigator;
-  const isPushCapable = 'PushManager' in window;
-  if (!isServiceWorkerCapable || !isPushCapable) {      
-    console.log('User agent must be service worker- ' + 
-                'and push-capable to use this page.');
+  if (!('serviceWorker' in navigator)) {
+    document.getElementById('registration-status-message').textContent =
+        "This browser doesn't support service workers.";
     return;
   }
-  updateUI();
+  const registration = await navigator.serviceWorker.getRegistration();
+  if (registration) {
+    document.getElementById('register').disabled = true;
+    document.getElementById('unregister').disabled = false;
+  }
+  // const isServiceWorkerCapable = 'serviceWorker' in navigator;
+  // const isPushCapable = 'PushManager' in window;
+  // if (!isServiceWorkerCapable || !isPushCapable) {      
+  //   console.log('User agent must be service worker- ' + 
+  //               'and push-capable to use this page.');
+  //   return;
+  // }
+  // updateUI();
 }
 
 window.onload = initializePage;
