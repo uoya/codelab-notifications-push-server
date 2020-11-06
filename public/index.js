@@ -167,12 +167,24 @@ async function initializePage() {
   if (!('serviceWorker' in navigator)) {
     document.getElementById('registration-status-message').textContent =
         "This browser doesn't support service workers.";
+    document.getElementById('register').disabled = true;
     return;
   }
+  document.getElementById('register').disabled = false;
   const registration = await navigator.serviceWorker.getRegistration();
   if (registration) {
     document.getElementById('register').disabled = true;
     document.getElementById('unregister').disabled = false;
+    document.getElementById('registration-status-message').textContent = 
+        `Service worker registered. Scope: ${registration.scope}`;
+  }
+  const subscription = await registration.pushManager.getSubscription();
+  if (registration.active && subscription) {
+    document.getElementById('subscribe').disabled = false;
+    document.getElementById('unsubscribe').disabled = true;
+    document.getElementById('notify-me').disabled = false;
+    document.getElementById('subscription-status-message').textContent = 
+        `Subscription endpoint: ${subscription.endpoint}`;
   }
   // const isServiceWorkerCapable = 'serviceWorker' in navigator;
   // const isPushCapable = 'PushManager' in window;

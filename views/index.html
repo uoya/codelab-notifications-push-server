@@ -17,14 +17,17 @@
   <body>
     <section class="app">
       <h2>Push notifications client</h2>
+      <noscript>
+        You have JavaScript disabled. This app requires JavaScript to work.
+      </noscript>
       <div>
         <header>Service Worker</header>
-        <textarea readonly id="registration-status-message">
-          No service worker registration.
-        </textarea>
+        <textarea readonly 
+                  id="registration-status-message">No service worker registration.</textarea>
         <button 
           id="register"
-          onclick="registerServiceWorker()">
+          onclick="registerServiceWorker()"
+          disabled>
           Register service worker
         </button>
         <button 
@@ -36,9 +39,8 @@
       </div>
       <div>
         <header>Push Subscripton</header>
-        <textarea readonly id="subscription-status-message">
-          No push subscription.
-        </textarea>
+        <textarea readonly 
+                  id="subscription-status-message">No push subscription.</textarea>
         <button 
           id="subscribe"
           onclick="subscribeToPush()"
@@ -56,9 +58,8 @@
     <section class="testing">
       <h2>Server Testing</h2>
       <p>Request a test notification from the server.</p>
-      <textarea readonly id="notification-status-message">
-        No notifications sent yet.
-      </textarea>
+      <textarea readonly 
+                id="notification-status-message">No notifications sent yet.</textarea>
       <div>
         <button  
           id="notify-me"
@@ -68,8 +69,7 @@
         </button>
         <button   
           id="notify-all"
-          onclick="notifyAll()"
-          disabled>
+          onclick="notifyAll()">
           Notify all subscriptions
         </button>
       </div>
