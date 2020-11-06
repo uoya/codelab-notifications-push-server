@@ -73,10 +73,6 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
-  // if (!request.session.subscriptions) request.session.subscriptions = {};
-  // request.session.subscriptions[request.body.endpoint] = request.body;
-  // console.info(`Subscribed ${request.body.endpoint}`);
-  console.log(request.body);
   db.get('subscriptions')
     .push(request.body)
     .write();
@@ -84,34 +80,28 @@ app.post('/add-subscription', (request, response) => {
 });
 
 app.post('/remove-subscription', (request, response) => {
-  // if (request.session.subscriptions[request.body.endpoint]) {
-  //   delete request.session.subscriptions[request.body.endpoint];
-  //   console.info(`Deleted ${request.body.endpoint}`);
-  // }
   db.get('subscriptions')
-    .find({endpoint: request.body.endpoint})
-    .remove();
+    .remove({endpoint: request.body.endpoint})
+    .write();
   response.sendStatus(200);
 });
 
 app.post('/notify-me', (request, response) => {
-  sendNotifications(request.session.subscriptions, [request.body.endpoint]);
+  const subscription = db.get('subscriptions').find({endpoint: request.body.endpoint}).value();
+  console.log({subscription});
+  // sendNotifications(subscription);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
-  if (request.session.subscriptions) {
-    sendNotifications(request.session.subscriptions, 
-        Object.keys(request.session.subscriptions));
+  const subscriptions = db.get('subscriptions').cloneDeep().value();
+  console.log({subscriptions});
+  if (subscriptions.length > 0) {
+    // sendNotifications(subscriptions);
     response.sendStatus(200);
   } else {
     response.sendStatus(409);
   }
-});
-
-app.post('/log-endpoints', (request, response) => {
-  console.log(request.session.subscriptions);
-  response.sendStatus(200);
 });
 
 app.get('/', (request, response) => {
