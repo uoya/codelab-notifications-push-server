@@ -67,7 +67,7 @@ async function updateUI() {
   // Reset all UI elements
   regP.textContent = '';
   subP.textContent = '';
-  regButton.disabled = true;
+  regButton.disabled = false;
   subButton.disabled = true;
   unRegButton.disabled = true;
   unSubButton.disabled = true;
@@ -80,6 +80,7 @@ async function updateUI() {
     regP.textContent = 
       'Service worker registered. Scope: ' + registration.scope;
     unRegButton.disabled = false;
+    regButton.disabled = true;
   } else {
     regP.textContent = 'No service worker registration.'
     regButton.disabled = false;

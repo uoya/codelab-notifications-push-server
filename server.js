@@ -25,17 +25,13 @@ const vapidDetails = {
   subject: process.env.VAPID_SUBJECT
 }
 
-// Create a test notification.
 function createNotification() {
-  let randy = Math.floor(Math.random() * 100);
-  let notification = {
-    title: 'Test ' + randy, 
+  return {
+    title: 'Notification',
     options: { 
-      body: 'Test body ' + randy
-      // More options here, e.g icons, actions, etc
+      body: `ID: ${Math.floor(Math.random() * 100)}`
     }
   };
-  return notification;
 }
 
 function sendNotifications(subscriptions) {
@@ -64,7 +60,7 @@ const app = express();
 app.use(session({
   resave: false,
   saveUninitialized: true,
-  secret: 'CATS. CATS ARE NICE.'
+  secret: 'kg94gja2359gjdk46jgf'
 }));
 app.use(bodyparser.json());
 app.use(express.static('public'));
