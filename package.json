@@ -4,7 +4,7 @@
   "description": "Codelab: Build a push notifications server",
   "main": "server.js",
   "scripts": {
-    "clean": "rm .data/db.json",
+    "clean": "[ -e .data/db.json ] && rm .data/db.json",
     "start": "npm run clean; node server.js;"
   },
   "dependencies": {

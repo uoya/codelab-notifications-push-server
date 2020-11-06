@@ -41,17 +41,17 @@ function createNotification() {
   return notification;
 }
 
-function sendNotifications(database, endpoints) {
-  console.log(endpoints.length);
-  let notification = JSON.stringify(createNotification());
-  let options = {
-    TTL: 10000, // Time-to-live. Notifications expire after this.
-    vapidDetails: vapidDetails // VAPID keys from .env
+function sendNotifications(subscriptions) {
+  const notification = JSON.stringify(createNotification());
+  const options = {
+    TTL: 10000,
+    vapidDetails: vapidDetails
   };
-  endpoints.forEach(endpoint => {
-    const subscription = database[endpoint];
+  console.log(subscriptions);
+  subscriptions.forEach(subscription => {
+    const endpoint = subscription.endpoint;
     const id = endpoint.substr((endpoint.length - 8), endpoint.length);
-    webpush.sendNotification(subscription, notification, options)
+    webpush.sendNotification(endpoint, notification, options)
     .then(result => {
       console.log(`Endpoint ID: ${id}`);
       console.log(`Result: ${result.statusCode} `);
@@ -88,16 +88,14 @@ app.post('/remove-subscription', (request, response) => {
 
 app.post('/notify-me', (request, response) => {
   const subscription = db.get('subscriptions').find({endpoint: request.body.endpoint}).value();
-  console.log({subscription});
-  // sendNotifications(subscription);
+  sendNotifications([subscription]);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
   const subscriptions = db.get('subscriptions').cloneDeep().value();
-  console.log({subscriptions});
   if (subscriptions.length > 0) {
-    // sendNotifications(subscriptions);
+    sendNotifications(subscriptions);
     response.sendStatus(200);
   } else {
     response.sendStatus(409);
