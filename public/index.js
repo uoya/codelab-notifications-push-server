@@ -120,6 +120,7 @@ async function registerServiceWorker() {
   // console.log('Servce worker registered. Scope:', registration.scope);
   document.getElementById('register').disabled = true;
   document.getElementById('unregister').disabled = false;
+  document.getElementById('subscribe').disabled = false;
 }
 
 // Unregister service worker, then update the UI
@@ -128,19 +129,26 @@ async function unRegisterServiceWorker() {
   await registration.unregister();
   document.getElementById('register').disabled = false;
   document.getElementById('unregister').disabled = true;
+  document.getElementById('subscribe').disabled = true;
+  document.getElementById('unsubscribe').disabled = true;
+  document.getElementById('notify-me').disabled = true;
 }
 
 // Subscribe the user to push notifications
 async function subscribeToPush() {
-  let registration = await getRegistration();
-  let subscription = await getSubscription();
-  if (!registration || subscription) { return; }
-  subscription = await registration.pushManager.subscribe({
+  const registration = await navigator.serviceWorker.getRegistration();
+  const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   });
-  postToServer('/add-subscription', subscription);
-  updateUI();
+  if (subscription && subscription.endpoint) {
+    postToServer('/add-subscription', subscription);
+    document.getElementById('subscribe').disabled = true;
+    document.getElementById('unsubscribe').disabled = false;
+    document.getElementById('notify-me').disabled = false;
+    document.getElementById('subscription-status-message').textContent =
+        `Subscription endpoint: ${subscription.endpoint}`;
+  }
 }
 
 // Unsubscribe the user from push notifications
