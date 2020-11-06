@@ -27,9 +27,6 @@ const vapidDetails = {
 
 // Create a test notification.
 function createNotification() {
-  // Insert a random number in the title and body text.
-  // This just helps you identify notifications while
-  // playing around with them
   let randy = Math.floor(Math.random() * 100);
   let notification = {
     title: 'Test ' + randy, 
@@ -51,14 +48,14 @@ function sendNotifications(subscriptions) {
   subscriptions.forEach(subscription => {
     const endpoint = subscription.endpoint;
     const id = endpoint.substr((endpoint.length - 8), endpoint.length);
-    webpush.sendNotification(endpoint, notification, options)
+    webpush.sendNotification(subscription, notification, options)
     .then(result => {
       console.log(`Endpoint ID: ${id}`);
       console.log(`Result: ${result.statusCode} `);
     })
     .catch(error => {
       console.log(`Endpoint ID: ${id}`);
-      console.log(`Error: ${error.body} `);
+      console.log(`Error: ${error} `);
     });
   });
 }
@@ -73,6 +70,7 @@ app.use(bodyparser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
+  console.log(`Subscribing ${request.body.endpoint}`);
   db.get('subscriptions')
     .push(request.body)
     .write();
@@ -80,6 +78,7 @@ app.post('/add-subscription', (request, response) => {
 });
 
 app.post('/remove-subscription', (request, response) => {
+  console.log(`Unsubscribing ${request.body.endpoint}`);
   db.get('subscriptions')
     .remove({endpoint: request.body.endpoint})
     .write();
@@ -87,12 +86,14 @@ app.post('/remove-subscription', (request, response) => {
 });
 
 app.post('/notify-me', (request, response) => {
+  console.log(`Notifying ${request.body.endpoint}`);
   const subscription = db.get('subscriptions').find({endpoint: request.body.endpoint}).value();
   sendNotifications([subscription]);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
+  console.log('Notifying all subscribers');
   const subscriptions = db.get('subscriptions').cloneDeep().value();
   if (subscriptions.length > 0) {
     sendNotifications(subscriptions);
