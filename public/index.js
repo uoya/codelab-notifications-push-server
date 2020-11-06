@@ -62,20 +62,17 @@ async function initializePage() {
   }
   const subscription = await registration.pushManager.getSubscription();
   if (registration.active && subscription) {
-    document.getElementById('subscribe').disabled = false;
-    document.getElementById('unsubscribe').disabled = true;
-    document.getElementById('notify-me').disabled = false;
-    document.getElementById('subscription-status-message').textContent = 
-        `Subscription endpoint: ${subscription.endpoint}`;
+    // document.getElementById('subscribe').disabled = false;
+    // document.getElementById('unsubscribe').disabled = true;
+    // document.getElementById('notify-me').disabled = false;
+    // document.getElementById('subscription-status-message').textContent = 
+    //     `Subscription endpoint: ${subscription.endpoint}`;
   }
 
 }
 
-// Refresh onscreen messages, set up UI.
+
 async function updateUI() {
-  const registration = await navigator.serviceWorker.getRegistration();
-  const subscription = await getSubscription();
-  // Get references to elements on the page
   const registrationStatus = document.getElementById('registration-status-message');
   const subscriptionStatus = document.getElementById('subscription-status-message');
   const registrationButton = document.getElementById('register');
@@ -84,47 +81,24 @@ async function updateUI() {
   const unsubscriptionButton = document.getElementById('unsubscribe');
   const notifyMeButton = document.getElementById('notify-me');
   const notifyAllButton = document.getElementById('notify-all');
-  // Reset all UI elements
-  registrationStatus.textContent = '';
-  subscriptionStatus.textContent = '';
-  registrationButton.disabled = false;
-  subscriptionButton.disabled = true;
-  unregistrationButton.disabled = true;
-  unsubscriptionButton.disabled = true;
-  notifyMeButton.disabled = true;
-  notifyAllButton.disabled = false;
-  // TODO
-  if (!('serviceWorker' in navigator)) {
-    registrationStatus.textContent = "This browser doesn't support service workers.";
-    registrationButton.disabled = true;
-  }
-  if (registration) {
-    // document.getElementById('register').disabled = true;
-    // document.getElementById('unregister').disabled = false;
-    // document.getElementById('registration-status-message').textContent = 
-    //     `Service worker registered. Scope: ${registration.scope}`;
-  }
-  // Set state of UI elements based on registration 
-  // and subscription states
-  if (registration) {
-    registrationStatus.textContent = 
-      'Service worker registered. Scope: ' + registration.scope;
-    unregistrationButton.disabled = false;
-    registrationButton.disabled = true;
-  } else {
-    registrationStatus.textContent = 'No service worker registration.'
+  if ('serviceWorker' in navigator) {
+    registrationStatus.textContent = '"This browser doesn't support service workers."';
     registrationButton.disabled = false;
   }
-  if (subscription && subscription.endpoint) {
-    subscriptionStatus.textContent = 
-      'Subscription endpoint: ' + subscription.endpoint;
-    unsubscriptionButton.disabled = false;
+  const registration = await navigator.serviceWorker.getRegistration();
+  if (registration) {
+    registrationButton.disabled = true;
+    unregistrationButton.disabled = false;
+    subscriptionButton.disabled = false;
+    registrationStatus.textContent =
+        `Service worker registered. Scope: ${registration.scope}`;
+  }
+  const subscription = await registration.pushManager.getSubscription();
+  if (subscription) {
+    subscriptionButton.disabled = true;
     notifyMeButton.disabled = false;
-  } else {
-    subscriptionStatus.textContent = 'No push subscription.'
-    if (registration && VAPID_PUBLIC_KEY) {
-      subscriptionButton.disabled = false;
-    }
+    subscriptionStatus.textContent = 
+        `Subscription endpoint: ${subscription.endpoint}`;
   }
 }
 
