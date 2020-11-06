@@ -4,13 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Build a push notifications server</title>
-    <link rel="stylesheet" href="/style.css">
+    <title>Push notifications client</title>
     <script src="index.js"></script>
+    <style>
+      textarea {
+        display: block;
+        min-height: 100px;
+        min-width: 250px;
+      }
+    </style>
   </head>
   <body>
-    <div class="app">
-      <h2>My App</h2>
+    <section class="app">
+      <h2>Push notifications client</h2>
       <div>
         <header>Service Worker</header>
         <textarea readonly id="registration-status-message">
@@ -35,40 +41,36 @@
           No push subscription.
         </textarea>
         <button 
-          disabled="true"    
           id="subscribe"
-          onclick="subscribeToPush()">
+          onclick="subscribeToPush()"
+          disabled>
           Subscribe to push
         </button>
         <button 
-          disabled="true"    
           id="unsubscribe"
-          onclick="unSubscribeFromPush()">
+          onclick="unSubscribeFromPush()"
+          disabled>
           Unsubscribe from push
         </button>
       </div>
-    </div>
-    <div class="testing">
+    </section>
+    <section class="testing">
       <h2>Server Testing</h2>
       <p>Request a test notification from the server.</p>
       <div>
-        <button 
-          disabled="true"    
+        <button  
           id="notify-me"
-          onclick="notifyMe()">
+          onclick="notifyMe()"
+          disabled>
           Notify current subscription
         </button>
-        <button 
-          disabled="true"    
+        <button   
           id="notify-all"
-          onclick="notifyAll()">
+          onclick="notifyAll()"
+          disabled>
           Notify all subscriptions
         </button>
       </div>
-    </div>
-    <!-- include the Glitch button to show what the webpage is about and
-          to make it easier for folks to view source and remix -->
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
-    <script src="https://button.glitch.me/button.js"></script>
+    </section>
   </body>
 </html>
