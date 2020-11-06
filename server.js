@@ -38,7 +38,7 @@ function sendNotifications(database, endpoints) {
     TTL: 10000, // Time-to-live. Notifications expire after this.
     vapidDetails: vapidDetails // VAPID keys from .env
   };
-  endpoints.map(endpoint => {
+  endpoints.forEach(endpoint => {
     const subscription = database[endpoint];
     const id = endpoint.substr((endpoint.length - 8), endpoint.length);
     webpush.sendNotification(subscription, notification, options)
@@ -65,30 +65,32 @@ app.use(express.static('public'));
 app.post('/add-subscription', (request, response) => {
   if (!request.session.subscriptions) request.session.subscriptions = {};
   request.session.subscriptions[request.body.endpoint] = request.body;
-  console.log(request.body);
+  console.info(`Subscribed ${request.body.endpoint}`);
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
   if (request.session.subscriptions[request.body.endpoint]) {
     delete request.session.subscriptions[request.body.endpoint];
-    console.log(request.body.endpoint); 
+    console.info(`Deleted ${request.body.endpoint}`);
   }
   response.sendStatus(200);
 });
 
 app.post('/notify-me', (request, response) => {
-  console.log('notifying one endpoint…');
-  let endpoint = request.body.endpoint;
-  let database = Object.assign({}, request.session.subscriptions);
-  sendNotifications(database, [endpoint]);
+  sendNotifications(request.session.subscriptions, [request.body.endpoint]);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
-  console.log('notifying all endpoints…');
-  let database = Object.assign({}, request.session.subscriptions);
-  sendNotifications(database, Object.keys(database));
+  if (!request.session.subscriptions) {
+    
+  } else {
+    
+  }
+    
+  sendNotifications(request.session.subscriptions, 
+      Object.keys(request.session.subscriptions));
   response.sendStatus(200);
 });
 

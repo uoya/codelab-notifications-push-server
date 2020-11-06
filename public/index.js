@@ -40,8 +40,10 @@ async function notifyMe() {
 
 // Ask server to send a test notification to all subscriptions
 async function notifyAll() {
-  console.log('Requesting test notification to all subscriptions');
-  postToServer('/notify-all', {});
+  const response = await fetch('/notify-all', {
+    method: 'POST'
+  });
+  console.log(response.status);
 }
 
 // Refresh onscreen messages, set up UI.
