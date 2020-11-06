@@ -43,7 +43,10 @@ async function notifyAll() {
   const response = await fetch('/notify-all', {
     method: 'POST'
   });
-  console.log(response.status);
+  if (response.status === 409) {
+    document.getElementById('notification-status-message').textContent =
+        'There are no subscribed endpoints to send messages to, yet.';
+  }
 }
 
 // Refresh onscreen messages, set up UI.

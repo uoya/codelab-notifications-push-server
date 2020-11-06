@@ -83,15 +83,13 @@ app.post('/notify-me', (request, response) => {
 });
 
 app.post('/notify-all', (request, response) => {
-  if (!request.session.subscriptions) {
-    
+  if (request.session.subscriptions) {
+    sendNotifications(request.session.subscriptions, 
+        Object.keys(request.session.subscriptions));
+    response.sendStatus(200);
   } else {
-    
+    response.sendStatus(409);
   }
-    
-  sendNotifications(request.session.subscriptions, 
-      Object.keys(request.session.subscriptions));
-  response.sendStatus(200);
 });
 
 app.post('/log-endpoints', (request, response) => {
