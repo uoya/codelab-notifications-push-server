@@ -38,9 +38,10 @@ function sendNotifications(database, endpoints) {
     TTL: 10000, // Time-to-live. Notifications expire after this.
     vapidDetails: vapidDetails // VAPID keys from .env
   };
-  endpoints.map(endpoint => {
-    let subscription = database[endpoint];
-    let id = endpoint.substr((endpoint.length - 8), endpoint.length);
+  for (const endpoint in endpoints) {
+    const subscription = database[endpoint];
+    if (!subscription) continue;
+    const id = endpoint.substr((endpoint.length - 8), endpoint.length);
     webpush.sendNotification(subscription, notification, options)
     .then(result => {
       console.log(`Endpoint ID: ${id}`);
@@ -50,7 +51,7 @@ function sendNotifications(database, endpoints) {
       console.log(`Endpoint ID: ${id}`);
       console.log(`Error: ${error.body} `);
     });
-  });
+  };
 }
 
 const app = express();
@@ -86,11 +87,6 @@ app.post('/notify-me', (request, response) => {
 app.post('/notify-all', (request, response) => {
   let database = Object.assign({}, request.session.subscriptions);
   sendNotifications(database, Object.keys(database));
-  response.sendStatus(200);
-});
-
-app.get('/get-subscription-count', (request, response) => {
-  console.log(typeof request.session.subscriptions);
   response.sendStatus(200);
 });
 
