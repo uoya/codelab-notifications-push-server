@@ -7,6 +7,10 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('.data/db.json');
 const db = low(adapter);
 
+db.defaults({
+  subscriptions: []
+}).write();
+
 // { publicKey: 'BOyFjA9NR-Bf9lSB_T9EOqAMZ_pwMLZEwGC9QPBD8AQgGCeR3QUcKFRihphzsC9bzrFiAYZr2wOgy4SlIiFhok4',
 //   privateKey: 'YneqpztUhGVl8jNNtK8FTR1CKm7ERKY4lYHynM-RS4I' }
 
@@ -71,17 +75,18 @@ app.post('/add-subscription', (request, response) => {
   // if (!request.session.subscriptions) request.session.subscriptions = {};
   // request.session.subscriptions[request.body.endpoint] = request.body;
   // console.info(`Subscribed ${request.body.endpoint}`);
+  console.log(request.body);
   db.get('subscriptions')
-    .push(request.body)
+    .push(JSON.stringify(request.body))
     .write();
   response.sendStatus(200);
 });
 
 app.post('/remove-subscription', (request, response) => {
-  if (request.session.subscriptions[request.body.endpoint]) {
-    delete request.session.subscriptions[request.body.endpoint];
-    console.info(`Deleted ${request.body.endpoint}`);
-  }
+  // if (request.session.subscriptions[request.body.endpoint]) {
+  //   delete request.session.subscriptions[request.body.endpoint];
+  //   console.info(`Deleted ${request.body.endpoint}`);
+  // }
   response.sendStatus(200);
 });
 
@@ -110,5 +115,5 @@ app.get('/', (request, response) => {
 });
 
 const listener = app.listen(process.env.PORT, () => {
-  console.log('Listening on port ' + listener.address().port);
+  console.log(`Listening on port ${listener.address().port}`);
 });
