@@ -27,7 +27,7 @@ const vapidDetails = {
 
 function createNotification() {
   return {
-    title: 'Notification',
+    title: 'Hello, Notifications!',
     options: { 
       body: `ID: ${Math.floor(Math.random() * 100)}`
     }

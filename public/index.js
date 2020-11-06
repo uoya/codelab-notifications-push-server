@@ -117,16 +117,17 @@ async function getSubscription() {
 async function registerServiceWorker() {
   await navigator.serviceWorker.register('./service-worker.js');
   let registration = await getRegistration();
-  console.log('Servce worker registered. Scope:', registration.scope);
-  updateUI();
+  // console.log('Servce worker registered. Scope:', registration.scope);
+  document.getElementById('register').disabled = true;
+  document.getElementById('unregister').disabled = false;
 }
 
 // Unregister service worker, then update the UI
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
   await registration.unregister();
-  console.log('Service worker has been unregistered.');
-  updateUI();
+  document.getElementById('register').disabled = false;
+  document.getElementById('unregister').disabled = true;
 }
 
 // Subscribe the user to push notifications
