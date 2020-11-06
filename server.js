@@ -3,14 +3,17 @@ const webpush = require('web-push');
 const bodyparser = require('body-parser');
 const session = require('express-session');
 
-// Generate VAPID keys (only do this once). 
-/* 
- * const vapidKeys = webpush.generateVAPIDKeys();
- * console.log(vapidKeys);
- */
+// { publicKey: 'BOyFjA9NR-Bf9lSB_T9EOqAMZ_pwMLZEwGC9QPBD8AQgGCeR3QUcKFRihphzsC9bzrFiAYZr2wOgy4SlIiFhok4',
+//   privateKey: 'YneqpztUhGVl8jNNtK8FTR1CKm7ERKY4lYHynM-RS4I' }
+
+// Generate VAPID keys
+const vapidKeys = webpush.generateVAPIDKeys();
+console.log(vapidKeys);
 
 const vapidDetails = {
-  // TODO: Load VAPID details from environment variables.
+  publicKey: process.env.VAPID_PUBLIC_KEY,
+  privateKey: process.env.VAPID_PRIVATE_KEY,
+  subject: process.env.VAPID_SUBJECT
 }
 
 // Create a test notification.
