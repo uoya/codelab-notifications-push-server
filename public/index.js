@@ -66,7 +66,7 @@ async function updateUI() {
   subButton.disabled = true;
   unRegButton.disabled = true;
   unSubButton.disabled = true;
-  notifyMeButton.disabled = false;
+  notifyMeButton.disabled = true;
   notifyAllButton.disabled = false;
   
   // Set state of UI elements based on registration 

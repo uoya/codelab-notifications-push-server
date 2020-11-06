@@ -89,6 +89,11 @@ app.post('/notify-all', (request, response) => {
   response.sendStatus(200);
 });
 
+app.get('/get-subscription-count', (request, response) => {
+  console.log(typeof request.session.subscriptions);
+  response.sendStatus(200);
+});
+
 app.get('/', (request, response) => {
   response.sendFile(__dirname + '/views/index.html');
 });
