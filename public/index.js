@@ -73,17 +73,21 @@ async function initializePage() {
 
 
 async function updateUI() {
-  const registrationStatus = document.getElementById('registration-status-message');
-  const subscriptionStatus = document.getElementById('subscription-status-message');
   const registrationButton = document.getElementById('register');
-  const subscriptionButton = document.getElementById('subscribe');
   const unregistrationButton = document.getElementById('unregister');
+  const registrationStatus = document.getElementById('registration-status-message');
+  const subscriptionButton = document.getElementById('subscribe');
   const unsubscriptionButton = document.getElementById('unsubscribe');
+  const subscriptionStatus = document.getElementById('subscription-status-message');
   const notifyMeButton = document.getElementById('notify-me');
   const notifyAllButton = document.getElementById('notify-all');
-  if ('serviceWorker' in navigator) {
-    registrationStatus.textContent = '"This browser doesn't support service workers."';
-    registrationButton.disabled = false;
+  if (!'serviceWorker' in navigator) {
+    registrationStatus.textContent = "This browser doesn't support service workers.";
+    registrationButton.disabled = true;
+    
+    notifyMeButton.disabled = true;
+    subscriptionStatus.textContent = "Push subscription isn't possible.";
+    return;
   }
   const registration = await navigator.serviceWorker.getRegistration();
   if (registration) {
