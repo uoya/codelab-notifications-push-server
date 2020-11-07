@@ -1,28 +1,39 @@
 const VAPID_PUBLIC_KEY = 'BOyFjA9NR-Bf9lSB_T9EOqAMZ_pwMLZEwGC9QPBD8AQgGCeR3QUcKFRihphzsC9bzrFiAYZr2wOgy4SlIiFhok4';
 
-// Convert a base64 string to Uint8Array.
-// Must do this so the server can understand the VAPID_PUBLIC_KEY.
-const urlB64ToUint8Array = (base64String) => {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
-    .replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray; 
-};
+/* Push notification logic. */
 
-async function postToServer(url, data) {
-  let response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+async function registerServiceWorker() {
+  await navigator.serviceWorker.register('./service-worker.js');
+  updateUI();
+}
+
+async function unregisterServiceWorker() {
+  const registration = await navigator.serviceWorker.getRegistration();
+  await registration.unregister();
+  updateUI();
+}
+
+async function subscribeToPush() {
+  const registration = await navigator.serviceWorker.getRegistration();
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   });
+  if (subscription && subscription.endpoint) {
+    postToServer('/add-subscription', subscription);
+    updateUI();
+  }
+}
+
+async function unsubscribeFromPush() {
+  const registration = await navigator.serviceWorker.getRegistration();
+  const subscription = await registration.pushManager.getSubscription();
+  if (!subscription || !subscription.endpoint) return;
+  postToServer('/remove-subscription', { 
+    endpoint: subscription.endpoint
+  });
+  await subscription.unsubscribe();
+  updateUI();
 }
 
 async function notifyMe() {
@@ -43,6 +54,8 @@ async function notifyAll() {
         'There are no subscribed endpoints to send messages to, yet.';
   }
 }
+
+/* UI logic. */
 
 async function updateUI() {
   const registrationButton = document.getElementById('register');
@@ -97,38 +110,31 @@ async function updateUI() {
   unsubscriptionButton.disabled = false;
 }
 
-async function registerServiceWorker() {
-  await navigator.serviceWorker.register('./service-worker.js');
-  updateUI();
-}
+/* Utility functions. */
 
-async function unregisterServiceWorker() {
-  const registration = await navigator.serviceWorker.getRegistration();
-  await registration.unregister();
-  updateUI();
-}
-
-async function subscribeToPush() {
-  const registration = await navigator.serviceWorker.getRegistration();
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
-  });
-  if (subscription && subscription.endpoint) {
-    postToServer('/add-subscription', subscription);
-    updateUI();
+// Convert a base64 string to Uint8Array.
+// Must do this so the server can understand the VAPID_PUBLIC_KEY.
+const urlB64ToUint8Array = (base64String) => {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
   }
-}
+  return outputArray; 
+};
 
-async function unsubscribeFromPush() {
-  const registration = await navigator.serviceWorker.getRegistration();
-  const subscription = await registration.pushManager.getSubscription();
-  if (!subscription || !subscription.endpoint) return;
-  postToServer('/remove-subscription', { 
-    endpoint: subscription.endpoint
+async function postToServer(url, data) {
+  let response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
   });
-  await subscription.unsubscribe();
-  updateUI();
 }
 
 window.onload = updateUI;
