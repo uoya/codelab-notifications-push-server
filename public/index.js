@@ -80,7 +80,7 @@ async function updateUI() {
   const unsubscriptionButton = document.getElementById('unsubscribe');
   const subscriptionStatus = document.getElementById('subscription-status-message');
   const notifyMeButton = document.getElementById('notify-me');
-  const notificationStatus = document.getElementById('subscription-status-message');
+  const notificationStatus = document.getElementById('notification-status-message');
   // Disable all buttons by default.
   registrationButton.disabled = true;
   unregistrationButton.disabled = true;
@@ -90,7 +90,8 @@ async function updateUI() {
   // Service worker is not supported so we can't go any further.
   if (!'serviceWorker' in navigator) {
     registrationStatus.textContent = "This browser doesn't support service workers.";
-    subscriptionStatus.textContent = "Push subscription isn't possible because of lack of service worker support.";
+    subscriptionStatus.textContent = "Push subscription on this client isn't possible because of lack of service worker support.";
+    notificationStatus.textContent = "Push notification to this client isn't possible because of lack of service worker support.";
     return;
   }  
   const registration = await navigator.serviceWorker.getRegistration();
@@ -98,7 +99,8 @@ async function updateUI() {
   if (!registration) {
     registrationButton.disabled = false;
     registrationStatus.textContent = 'No service worker has been registered yet.';
-    subscriptionStatus.textContent = "Push subscription isn't possible until a service worker is registered.";
+    subscriptionStatus.textContent = "Push subscription on this client isn't possible until a service worker is registered.";
+    notificationStatus.textContent = "Push notification to this client isn't possible until a service worker is registered.";
     return;
   }
   registrationStatus.textContent =
@@ -109,24 +111,24 @@ async function updateUI() {
   if (!subscription) {
     unregistrationButton.disabled = false;
     subscriptionButton.disabled = false;
-    subscriptionStatus.textContent = 'Ready to subscribe to push.';
+    subscriptionStatus.textContent = 'Ready to subscribe this client to push.';
+    notificationStatus.textContent = 'Push notification to this client will be possible once subscribed.';
     return;
   }
   // Service worker is registered and subscribed for push and now we need
   // to unregister service worker, unsubscribe to push, or send notifications.
   subscriptionStatus.textContent =
       `Service worker subscribed to push. Endpoint: ${subscription.endpoint}`;
+  notificationStatus.textContent = 'Ready to send a push notification to this client!';
   unregistrationButton.disabled = false;
   notifyMeButton.disabled = false;
   unsubscriptionButton.disabled = false;
 }
 
-// Get current service worker registration, if any
 async function getRegistration() {
   return navigator.serviceWorker.getRegistration();
 }
 
-// Get current push subscription, if any
 async function getSubscription() {
   let registration = await getRegistration();
   if (!(registration && registration.active)) {
@@ -136,14 +138,12 @@ async function getSubscription() {
   }
 }
 
-// Register service worker, then update the UI
 async function registerServiceWorker() {
   await navigator.serviceWorker.register('./service-worker.js');
   let registration = await getRegistration();
   updateUI();
 }
 
-// Unregister service worker, then update the UI
 async function unRegisterServiceWorker() {
   let registration = await getRegistration();
   await registration.unregister();
