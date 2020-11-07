@@ -6,24 +6,19 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('.data/db.json');
 const db = low(adapter);
-
+const vapidDetails = {
+  publicKey: process.env.VAPID_PUBLIC_KEY,
+  privateKey: process.env.VAPID_PRIVATE_KEY,
+  subject: process.env.VAPID_SUBJECT
+};
 
 db.defaults({
   subscriptions: []
 }).write();
 
-// { publicKey: 'BOyFjA9NR-Bf9lSB_T9EOqAMZ_pwMLZEwGC9QPBD8AQgGCeR3QUcKFRihphzsC9bzrFiAYZr2wOgy4SlIiFhok4',
-//   privateKey: 'YneqpztUhGVl8jNNtK8FTR1CKm7ERKY4lYHynM-RS4I' }
-
 // Generate VAPID keys
-const vapidKeys = webpush.generateVAPIDKeys();
+// const vapidKeys = webpush.generateVAPIDKeys();
 // console.log(vapidKeys);
-
-const vapidDetails = {
-  publicKey: process.env.VAPID_PUBLIC_KEY,
-  privateKey: process.env.VAPID_PRIVATE_KEY,
-  subject: process.env.VAPID_SUBJECT
-}
 
 function createNotification() {
   return {
@@ -40,19 +35,18 @@ function sendNotifications(subscriptions) {
     TTL: 10000,
     vapidDetails: vapidDetails
   };
-  console.log(subscriptions);
   subscriptions.forEach(subscription => {
     const endpoint = subscription.endpoint;
     const id = endpoint.substr((endpoint.length - 8), endpoint.length);
     webpush.sendNotification(subscription, notification, options)
-    .then(result => {
-      console.log(`Endpoint ID: ${id}`);
-      console.log(`Result: ${result.statusCode} `);
-    })
-    .catch(error => {
-      console.log(`Endpoint ID: ${id}`);
-      console.log(`Error: ${error} `);
-    });
+      .then(result => {
+        console.log(`Endpoint ID: ${id}`);
+        console.log(`Result: ${result.statusCode}`);
+      })
+      .catch(error => {
+        console.log(`Endpoint ID: ${id}`);
+        console.log(`Error: ${error} `);
+      });
   });
 }
 
