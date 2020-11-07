@@ -19,16 +19,13 @@ async function subscribeToPush() {
     userVisibleOnly: true,
     applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
   });
-  if (subscription && subscription.endpoint) {
-    postToServer('/add-subscription', subscription);
-    updateUI();
-  }
+  postToServer('/add-subscription', subscription);
+  updateUI();
 }
 
 async function unsubscribeFromPush() {
   const registration = await navigator.serviceWorker.getRegistration();
   const subscription = await registration.pushManager.getSubscription();
-  if (!subscription || !subscription.endpoint) return;
   postToServer('/remove-subscription', { 
     endpoint: subscription.endpoint
   });
@@ -39,9 +36,6 @@ async function unsubscribeFromPush() {
 async function notifyMe() {
   const registration = await navigator.serviceWorker.getRegistration();
   const subscription = await registration.pushManager.getSubscription();
-  if (!subscription || !subscription.endpoint) { 
-    return; 
-  }
   postToServer('/notify-me', { endpoint: subscription.endpoint });
 }
 
