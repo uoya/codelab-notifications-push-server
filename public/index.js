@@ -81,7 +81,7 @@ async function updateUI() {
   const subscriptionStatus = document.getElementById('subscription-status-message');
   const notifyMeButton = document.getElementById('notify-me');
   // Disable all buttons by default.
-  registration.button.disabled = true;
+  registrationButton.disabled = true;
   unregistrationButton.disabled = true;
   subscriptionButton.disabled = true;
   unsubscriptionButton.disabled = true;
@@ -89,26 +89,35 @@ async function updateUI() {
   // Service worker isn't supported.
   if (!'serviceWorker' in navigator) {
     registrationStatus.textContent = "This browser doesn't support service workers.";
-    subscriptionStatus.textContent = "Push subscription isn't possible.";
+    subscriptionStatus.textContent = "Push subscription isn't possible because of lack of service worker support.";
     return;
   }
-  if (!navigator.serviceWorker) return;
-  if (!navigator.serviceWorker.getRegistration) return;
+  // Service worker is supported.
+  registrationButton.disabled = false;
+  // Service worker does not yet exist.
+  if (!navigator.serviceWorker) {
+    registrationStatus.textContent = 'No service worker has been registered yet.';
+    subscriptionStatus.textContent = "Push subscription isn't possible until a service worker is registered.";
+    return;
+  }
+  // Service worker isn't registered.
   const registration = await navigator.serviceWorker.getRegistration();
-  if (registration) {
-    registrationButton.disabled = true;
-    unregistrationButton.disabled = false;
+  if (!registration) {
+    registrationButton.disabled = false;
+    unregistrationButton.disabled = true;
     subscriptionButton.disabled = false;
-    registrationStatus.textContent =
-        `Service worker registered. Scope: ${registration.scope}`;
+
+    return;
   }
+  registrationButton.disabled = true;
+  unregistrationButton.disabled = false;
+  registrationStatus.textContent =
+      `Service worker registered. Scope: ${registration.scope}`;
   const subscription = await registration.pushManager.getSubscription();
-  if (subscription) {
-    subscriptionButton.disabled = true;
-    notifyMeButton.disabled = false;
-    subscriptionStatus.textContent = 
-        `Subscription endpoint: ${subscription.endpoint}`;
+  if (!subscription) {
+
   }
+  
 }
 
 // Get current service worker registration, if any
