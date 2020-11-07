@@ -80,15 +80,20 @@ async function updateUI() {
   const unsubscriptionButton = document.getElementById('unsubscribe');
   const subscriptionStatus = document.getElementById('subscription-status-message');
   const notifyMeButton = document.getElementById('notify-me');
-  const notifyAllButton = document.getElementById('notify-all');
+  // Disable all buttons by default.
+  registration.button.disabled = true;
+  unregistrationButton.disabled = true;
+  subscriptionButton.disabled = true;
+  unsubscriptionButton.disabled = true;
+  notifyMeButton.disabled = true;
+  // Service worker isn't supported.
   if (!'serviceWorker' in navigator) {
     registrationStatus.textContent = "This browser doesn't support service workers.";
-    registrationButton.disabled = true;
-    
-    notifyMeButton.disabled = true;
     subscriptionStatus.textContent = "Push subscription isn't possible.";
     return;
   }
+  if (!navigator.serviceWorker) return;
+  if (!navigator.serviceWorker.getRegistration) return;
   const registration = await navigator.serviceWorker.getRegistration();
   if (registration) {
     registrationButton.disabled = true;
