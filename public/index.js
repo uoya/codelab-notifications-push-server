@@ -92,32 +92,30 @@ async function updateUI() {
     subscriptionStatus.textContent = "Push subscription isn't possible because of lack of service worker support.";
     return;
   }
-  // Service worker is supported.
-  registrationButton.disabled = false;
-  // Service worker does not yet exist.
-  if (!navigator.serviceWorker) {
+  const registration = await navigator.serviceWorker.getRegistration();
+  // Service worker hasn't been registered yet.
+  if (!registration) {
+    registrationButton.disabled = false;
     registrationStatus.textContent = 'No service worker has been registered yet.';
     subscriptionStatus.textContent = "Push subscription isn't possible until a service worker is registered.";
     return;
   }
-  // Service worker isn't registered.
-  const registration = await navigator.serviceWorker.getRegistration();
-  if (!registration) {
-    registrationButton.disabled = false;
-    unregistrationButton.disabled = true;
-    subscriptionButton.disabled = false;
-
-    return;
-  }
+  // Service worker is registered.
   registrationButton.disabled = true;
   unregistrationButton.disabled = false;
   registrationStatus.textContent =
       `Service worker registered. Scope: ${registration.scope}`;
   const subscription = await registration.pushManager.getSubscription();
+  // Not subscribed yet.
   if (!subscription) {
-
+    subscriptionStatus.textContent = 'Ready to subscribe to push.';
+    subscriptionButton.disabled = false;
+    unsubscriptionButton.disabled = true;
+    return;
   }
-  
+  // Subscribed!
+  subscriptionStatus.textContent =
+      `Subscription endpoint: ${subscription.endpoint}`;
 }
 
 // Get current service worker registration, if any
