@@ -15,7 +15,6 @@ const urlB64ToUint8Array = (base64String) => {
   return outputArray; 
 };
 
-// Send a request to one of the server's POST URLs
 async function postToServer(url, data) {
   let response = await fetch(url, {
     method: 'POST',
@@ -23,22 +22,18 @@ async function postToServer(url, data) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  }).catch(console.log);
-  console.log(url, response.status);
+  });
 }
 
-// Ask server to send a test notification to current subscription
 async function notifyMe() {
-  let subscription = await getSubscription();
+  const registration = await navigator.serviceWorker.getRegistration();
+  const subscription = await registration.pushManager.getSubscription();
   if (!subscription || !subscription.endpoint) { 
-    console.log('No current subscription endpoint exists.');
     return; 
   }
-  console.log('Requesting test notification to', subscription.endpoint);
   postToServer('/notify-me', { endpoint: subscription.endpoint });
 }
 
-// Ask server to send a test notification to all subscriptions
 async function notifyAll() {
   const response = await fetch('/notify-all', {
     method: 'POST'
@@ -48,29 +43,6 @@ async function notifyAll() {
         'There are no subscribed endpoints to send messages to, yet.';
   }
 }
-
-// Perform feature-detection, update the UI
-async function initializePage() {
-
-  document.getElementById('register').disabled = false;
-  const registration = await navigator.serviceWorker.getRegistration();
-  if (registration) {
-    // document.getElementById('register').disabled = true;
-    // document.getElementById('unregister').disabled = false;
-    // document.getElementById('registration-status-message').textContent = 
-    //     `Service worker registered. Scope: ${registration.scope}`;
-  }
-  const subscription = await registration.pushManager.getSubscription();
-  if (registration.active && subscription) {
-    // document.getElementById('subscribe').disabled = false;
-    // document.getElementById('unsubscribe').disabled = true;
-    // document.getElementById('notify-me').disabled = false;
-    // document.getElementById('subscription-status-message').textContent = 
-    //     `Subscription endpoint: ${subscription.endpoint}`;
-  }
-
-}
-
 
 async function updateUI() {
   const registrationButton = document.getElementById('register');
@@ -125,32 +97,17 @@ async function updateUI() {
   unsubscriptionButton.disabled = false;
 }
 
-async function getRegistration() {
-  return navigator.serviceWorker.getRegistration();
-}
-
-async function getSubscription() {
-  let registration = await getRegistration();
-  if (!(registration && registration.active)) {
-    return null;
-  } else { 
-    return registration.pushManager.getSubscription();
-  }
-}
-
 async function registerServiceWorker() {
   await navigator.serviceWorker.register('./service-worker.js');
-  let registration = await getRegistration();
   updateUI();
 }
 
-async function unRegisterServiceWorker() {
-  let registration = await getRegistration();
+async function unregisterServiceWorker() {
+  const registration = await navigator.serviceWorker.getRegistration();
   await registration.unregister();
   updateUI();
 }
 
-// Subscribe the user to push notifications
 async function subscribeToPush() {
   const registration = await navigator.serviceWorker.getRegistration();
   const subscription = await registration.pushManager.subscribe({
@@ -163,9 +120,9 @@ async function subscribeToPush() {
   }
 }
 
-// Unsubscribe the user from push notifications
-async function unSubscribeFromPush() {
-  let subscription = await getSubscription();
+async function unsubscribeFromPush() {
+  const registration = await navigator.serviceWorker.getRegistration();
+  const subscription = await registration.pushManager.getSubscription();
   if (!subscription || !subscription.endpoint) return;
   postToServer('/remove-subscription', { 
     endpoint: subscription.endpoint
@@ -173,7 +130,5 @@ async function unSubscribeFromPush() {
   await subscription.unsubscribe();
   updateUI();
 }
-
-
 
 window.onload = updateUI;
