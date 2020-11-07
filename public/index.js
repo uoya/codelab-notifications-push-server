@@ -80,42 +80,45 @@ async function updateUI() {
   const unsubscriptionButton = document.getElementById('unsubscribe');
   const subscriptionStatus = document.getElementById('subscription-status-message');
   const notifyMeButton = document.getElementById('notify-me');
+  const notificationStatus = document.getElementById('subscription-status-message');
   // Disable all buttons by default.
   registrationButton.disabled = true;
   unregistrationButton.disabled = true;
   subscriptionButton.disabled = true;
   unsubscriptionButton.disabled = true;
   notifyMeButton.disabled = true;
-  // Service worker isn't supported.
+  // Service worker is not supported so we can't go any further.
   if (!'serviceWorker' in navigator) {
     registrationStatus.textContent = "This browser doesn't support service workers.";
     subscriptionStatus.textContent = "Push subscription isn't possible because of lack of service worker support.";
     return;
-  }
+  }  
   const registration = await navigator.serviceWorker.getRegistration();
-  // Service worker hasn't been registered yet.
+  // Service worker is available and now we need to register one.
   if (!registration) {
     registrationButton.disabled = false;
     registrationStatus.textContent = 'No service worker has been registered yet.';
     subscriptionStatus.textContent = "Push subscription isn't possible until a service worker is registered.";
     return;
   }
-  // Service worker is registered.
-  registrationButton.disabled = true;
-  unregistrationButton.disabled = false;
   registrationStatus.textContent =
       `Service worker registered. Scope: ${registration.scope}`;
   const subscription = await registration.pushManager.getSubscription();
-  // Not subscribed yet.
+  // Service worker is registered and now we need to subscribe for push
+  // or unregister the existing service worker.
   if (!subscription) {
-    subscriptionStatus.textContent = 'Ready to subscribe to push.';
+    unregistrationButton.disabled = false;
     subscriptionButton.disabled = false;
-    unsubscriptionButton.disabled = true;
+    subscriptionStatus.textContent = 'Ready to subscribe to push.';
     return;
   }
-  // Subscribed!
+  // Service worker is registered and subscribed for push and now we need
+  // to unregister service worker, unsubscribe to push, or send notifications.
   subscriptionStatus.textContent =
-      `Subscription endpoint: ${subscription.endpoint}`;
+      `Service worker subscribed to push. Endpoint: ${subscription.endpoint}`;
+  unregistrationButton.disabled = false;
+  notifyMeButton.disabled = false;
+  unsubscriptionButton.disabled = false;
 }
 
 // Get current service worker registration, if any
