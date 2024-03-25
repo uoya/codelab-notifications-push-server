@@ -16,7 +16,6 @@ const vapidDetails = {
   subject: process.env.VAPID_SUBJECT
 };
 
-console.log(vapidDetails);
 
 // Generate VAPID keys
 // const vapidKeys = webpush.generateVAPIDKeys();
@@ -33,9 +32,10 @@ function createNotification() {
 
 function sendNotifications(subscriptions) {
   const notification = JSON.stringify(createNotification());
+  webpush.setVapidDetails(vapidDetails.subject, vapidDetails.publicKey, vapidDetails.privateKey);
   const options = {
     TTL: 10000,
-    vapidDetails: vapidDetails
+    urgency: 'normal'
   };
   subscriptions.forEach(subscription => {
     const endpoint = subscription.endpoint;
@@ -46,7 +46,9 @@ function sendNotifications(subscriptions) {
         console.log(`Result: ${result.statusCode}`);
       })
       .catch(error => {
+        console.log(error);
         console.log(`Endpoint ID: ${id}`);
+        console.log(`Error: ${error.statusCode} `);
         console.log(`Error: ${error} `);
       });
   });
@@ -63,30 +65,30 @@ app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
   console.log(`Subscribing ${request.body.endpoint}`);
-  db.get('subscriptions')
-    .push(request.body)
-    .write();
-  response.sendStatus(200);
+  db.update(({subscriptions}) => subscriptions.push(request.body)).then(() => {
+    response.sendStatus(200);
+  });
 });
 
 app.post('/remove-subscription', (request, response) => {
   console.log(`Unsubscribing ${request.body.endpoint}`);
-  db.get('subscriptions')
-    .remove({endpoint: request.body.endpoint})
-    .write();
-  response.sendStatus(200);
+  db.update(({subscriptions}) => subscriptions.splice(subscriptions.findIndex(s => s.endpoint === request.body.endpoint),1)).then(() => {
+    response.sendStatus(200);
+  });
 });
 
 app.post('/notify-me', (request, response) => {
   console.log(`Notifying ${request.body.endpoint}`);
-  const subscription = db.get('subscriptions').find({endpoint: request.body.endpoint}).value();
+  db.read();
+  const subscription = db.data.subscriptions.find(s => s.endpoint === request.body.endpoint);
   sendNotifications([subscription]);
   response.sendStatus(200);
 });
 
 app.post('/notify-all', (request, response) => {
   console.log('Notifying all subscribers');
-  const subscriptions = db.get('subscriptions').cloneDeep().value();
+  db.read();  
+  const subscriptions = db.data.subscriptions;
   if (subscriptions.length > 0) {
     sendNotifications(subscriptions);
     response.sendStatus(200);
