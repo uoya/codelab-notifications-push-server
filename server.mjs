@@ -23,7 +23,7 @@ const vapidDetails = {
 
 function createNotification() {
   return {
-    title: 'Hello, Notifications!',
+    title: 'UOYA WEB-PUSH!',
     options: { 
       body: `ID: ${Math.floor(Math.random() * 100)}`
     }
@@ -46,7 +46,6 @@ function sendNotifications(subscriptions) {
         console.log(`Result: ${result.statusCode}`);
       })
       .catch(error => {
-        console.log(error);
         console.log(`Endpoint ID: ${id}`);
         console.log(`Error: ${error.statusCode} `);
         console.log(`Error: ${error} `);
