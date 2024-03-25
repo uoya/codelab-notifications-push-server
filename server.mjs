@@ -1,20 +1,22 @@
-const express = require('express');
-const webpush = require('web-push');
-const bodyparser = require('body-parser');
-const session = require('express-session');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync('.data/db.json');
-const db = low(adapter);
+import express from 'express';
+import webpush from 'web-push';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import { JSONFilePreset } from 'lowdb/node';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const defaultData = { subscriptions: [] }
+const db = await JSONFilePreset('.data/db.json', defaultData)
 const vapidDetails = {
   publicKey: process.env.VAPID_PUBLIC_KEY,
   privateKey: process.env.VAPID_PRIVATE_KEY,
   subject: process.env.VAPID_SUBJECT
 };
 
-db.defaults({
-  subscriptions: []
-}).write();
+console.log(vapidDetails);
 
 // Generate VAPID keys
 // const vapidKeys = webpush.generateVAPIDKeys();
@@ -56,7 +58,7 @@ app.use(session({
   saveUninitialized: true,
   secret: 'kg94gja2359gjdk46jgf'
 }));
-app.use(bodyparser.json());
+app.use(bodyParser.json());
 app.use(express.static('public'));
 
 app.post('/add-subscription', (request, response) => {
