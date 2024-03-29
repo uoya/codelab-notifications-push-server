@@ -8,7 +8,7 @@
     "start": "npm run clean; node --env-file=.env server.mjs"
   },
   "dependencies": {
-    "express": "^4.18.3",
+    "express": "^4.19.2",
     "web-push": "^3.6.5",
     "body-parser": "^1.20.2",
     "express-session": "^1.18.0",
